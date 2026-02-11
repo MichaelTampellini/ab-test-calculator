@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A/B Test Power Analysis Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0A0A;
+    --surface: #161616;
+    --surface-hover: #1E1E1E;
+    --border: #2A2A2A;
+    --border-focus: #FFD000;
+    --text: #F5F5F5;
+    --text-muted: #999999;
+    --text-dim: #666666;
+    --accent: #FFD000;
+    --accent-soft: rgba(255, 208, 0, 0.12);
+    --green: #FFD000;
+    --green-soft: rgba(255, 208, 0, 0.10);
+    --amber: #FFD000;
+    --amber-soft: rgba(255, 208, 0, 0.10);
+    --red: #FF5555;
+    --red-soft: rgba(255, 85, 85, 0.12);
+    --radius: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 32px 24px;
+    line-height: 1.5;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .header {
+    margin-bottom: 32px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+
+  .header p {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  input[type="number"], select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+    transition: border-color 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%238B8FA3' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+
+  .suffix {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'DM Sans', sans-serif;
+    pointer-events: none;
+  }
+
+  .helper {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+
+  .helper em {
+    color: var(--text-muted);
+    font-style: normal;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn:hover { background: #E6BB00; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+
+  /* Results */
+  .results { display: none; }
+  .results.visible { display: block; }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .result-item {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .result-item .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .result-item .label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Recommendation badge */
+  .recommendation {
+    border-radius: 8px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .recommendation.go {
+    background: rgba(255, 208, 0, 0.10);
+    border: 1px solid rgba(255, 208, 0, 0.25);
+  }
+
+  .recommendation.caution {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .recommendation.warning {
+    background: var(--red-soft);
+    border: 1px solid rgba(255, 85, 85, 0.25);
+  }
+
+  .rec-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .rec-text { font-size: 14px; line-height: 1.55; }
+  .rec-text strong { font-weight: 600; }
+
+  /* Split visualization */
+  .split-viz {
+    margin-top: 12px;
+  }
+
+  .split-bar-container {
+    display: flex;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 36px;
+    margin-bottom: 10px;
+  }
+
+  .split-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    transition: width 0.4s ease;
+  }
+
+  .split-segment.control { background: #444444; }
+  .split-segment.variant-a { background: #FFD000; color: #000; }
+  .split-segment.variant-b { background: #F5F5F5; color: #000; }
+  .split-segment.variant-c { background: #B8960A; color: #fff; }
+
+  .split-legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .legend-dot.control { background: #444444; }
+  .legend-dot.variant-a { background: #FFD000; }
+  .legend-dot.variant-b { background: #F5F5F5; }
+  .legend-dot.variant-c { background: #B8960A; }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .detail-row:last-child { border-bottom: none; }
+  .detail-row .detail-label { color: var(--text-muted); }
+  .detail-row .detail-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+
+  .footnote {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .result-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>A/B Test Split Calculator</h1>
+    <p>Enter your test parameters to get a recommended group split and duration.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Test Parameters</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="audience">Total Audience Size</label>
+        <div class="input-wrapper">
+          <input type="number" id="audience" placeholder="200000" value="">
+          <span class="suffix">users</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="variants">Number of Groups</label>
+        <select id="variants">
+          <option value="2">2 (Control + 1 Variant)</option>
+          <option value="3">3 (Control + 2 Variants)</option>
+          <option value="4">4 (Control + 3 Variants)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="baseline">Baseline Rate</label>
+        <div class="helper">What's the current rate of the metric you're trying to move? <em>e.g., if 40% of users currently retain week-over-week, enter 40.</em></div>
+        <div class="input-wrapper">
+          <input type="number" id="baseline" placeholder="40" step="0.1" value="">
+          <span class="suffix">%</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="mde">Min Detectable Effect</label>
+        <div class="helper">What's the smallest improvement that would make this test worth it? <em>e.g., if retention is 40% today and a 2 percentage point lift to 42% matters, enter 2.</em></div>
+        <div class="input-wrapper">
+          <input type="number" id="mde" placeholder="2" step="0.1" value="">
+          <span class="suffix">pp</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="confidence">Confidence Level</label>
+        <div class="helper">How sure do you need to be that the results are real and not random noise? <em>95% is the gold standard. Use 90% for faster, lower-stakes tests. 80% if you just need a gut check.</em></div>
+        <select id="confidence">
+          <option value="0.05">95% — Definitive (α = 0.05)</option>
+          <option value="0.10">90% — Directional (α = 0.10)</option>
+          <option value="0.20">80% — Sanity Check (α = 0.20)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="power">Statistical Power</label>
+        <div class="helper">How likely are we to detect a real effect if one actually exists? <em>80% is standard — it means a 1-in-5 chance we miss a real winner. 90% reduces that risk but needs more users.</em></div>
+        <select id="power">
+          <option value="0.80">80% (Standard)</option>
+          <option value="0.90">90% (Conservative)</option>
+        </select>
+      </div>
+      <div class="form-group full-width">
+        <button class="btn" onclick="calculate()">Calculate Recommended Split</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results" id="results">
+    <div class="card">
+      <div class="card-title">Recommendation</div>
+      <div id="recommendation"></div>
+      <div id="splitViz" class="split-viz"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Details</div>
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="value" id="reqPerGroup">—</div>
+          <div class="label">Required / Group</div>
+        </div>
+        <div class="result-item">
+          <div class="value" id="reqTotal">—</div>
+          <div class="label">Total Required</div>
+        </div>
+        <div class="result-item">
+          <div class="value" id="headroom">—</div>
+          <div class="label">Headroom</div>
+        </div>
+      </div>
+      <div id="detailRows"></div>
+      <div class="footnote">
+        Sample size calculated using normal approximation for two-proportion z-test.
+        Headroom = how much larger your audience is than the minimum required.
+        Higher headroom means more flexibility for unequal splits.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function zScore(alpha) {
+  // Approximation of inverse normal CDF (Abramowitz & Stegun)
+  const p = 1 - alpha / 2;
+  const t = Math.sqrt(-2 * Math.log(1 - p));
+  const c0 = 2.515517, c1 = 0.802853, c2 = 0.010328;
+  const d1 = 1.432788, d2 = 0.189269, d3 = 0.001308;
+  return t - (c0 + c1 * t + c2 * t * t) / (1 + d1 * t + d2 * t * t + d3 * t * t * t);
+}
+
+function requiredSamplePerGroup(baselineRate, mde, alpha, power) {
+  const p1 = baselineRate;
+  const p2 = baselineRate + mde;
+  const zAlpha = zScore(alpha);
+  const zBeta = zScore((1 - power) * 2); // one-sided transform
+  const pBar = (p1 + p2) / 2;
+  const n = Math.pow(zAlpha * Math.sqrt(2 * pBar * (1 - pBar)) + zBeta * Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2)), 2) / Math.pow(p2 - p1, 2);
+  return Math.ceil(n);
+}
+
+function formatNum(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+  return n.toLocaleString();
+}
+
+function calculate() {
+  const audience = parseInt(document.getElementById('audience').value);
+  const numGroups = parseInt(document.getElementById('variants').value);
+  const baselineRate = parseFloat(document.getElementById('baseline').value) / 100;
+  const mde = parseFloat(document.getElementById('mde').value) / 100;
+  const alpha = parseFloat(document.getElementById('confidence').value);
+  const power = parseFloat(document.getElementById('power').value);
+
+  if (!audience || !baselineRate || !mde) {
+    alert('Please fill in all fields.');
+    return;
+  }
+
+  const nPerGroup = requiredSamplePerGroup(baselineRate, mde, alpha, power);
+  const totalRequired = nPerGroup * numGroups;
+  const headroom = audience / totalRequired;
+
+  // Determine recommended split
+  let splitRec, splitLabel, recType, recMsg;
+  let controlPct, variantPct;
+
+  if (headroom < 1) {
+    recType = 'warning';
+    recMsg = `<strong>Insufficient audience.</strong> You need at least ${formatNum(totalRequired)} users but only have ${formatNum(audience)}. Consider increasing audience size, accepting a larger MDE, or lowering confidence level.`;
+    controlPct = Math.round(100 / numGroups);
+    variantPct = controlPct;
+    splitLabel = Array(numGroups).fill(controlPct).join('/');
+  } else if (headroom >= 3) {
+    recType = 'go';
+    if (numGroups === 2) {
+      controlPct = 20; variantPct = 80;
+      splitLabel = '80/20';
+    } else if (numGroups === 3) {
+      controlPct = 20; variantPct = 40;
+      splitLabel = '40/40/20';
+    } else {
+      controlPct = 16; variantPct = 28;
+      splitLabel = '28/28/28/16';
+    }
+    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x more users than needed. This gives the promo team maximum reach while maintaining enough statistical power to detect a ${(mde * 100).toFixed(1)}pp effect.`;
+  } else if (headroom >= 1.5) {
+    recType = 'go';
+    if (numGroups === 2) {
+      controlPct = 30; variantPct = 70;
+      splitLabel = '70/30';
+    } else if (numGroups === 3) {
+      controlPct = 25; variantPct = 37;
+      splitLabel = '38/37/25';
+    } else {
+      controlPct = 20; variantPct = 27;
+      splitLabel = '27/27/26/20';
+    }
+    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x headroom. A smaller control is possible while still detecting a ${(mde * 100).toFixed(1)}pp effect at your chosen confidence.`;
+  } else {
+    controlPct = Math.round(100 / numGroups);
+    variantPct = controlPct;
+    if (numGroups === 2) splitLabel = '50/50';
+    else if (numGroups === 3) splitLabel = '33/33/33';
+    else splitLabel = '25/25/25/25';
+    recType = 'caution';
+    recMsg = `<strong>Recommended: ${splitLabel} equal split.</strong> Audience size is tight (${headroom.toFixed(1)}x headroom). An equal split maximizes your power to detect a ${(mde * 100).toFixed(1)}pp effect. Unequal splits would risk an underpowered test.`;
+  }
+
+  // Render recommendation
+  const icons = { go: '✅', caution: '⚠️', warning: '🚫' };
+  document.getElementById('recommendation').innerHTML = `
+    <div class="recommendation ${recType}">
+      <span class="rec-icon">${icons[recType]}</span>
+      <span class="rec-text">${recMsg}</span>
+    </div>`;
+
+  // Render split visualization
+  const groupColors = ['variant-a', 'variant-b', 'variant-c'];
+  const groupLabels = ['Variant A', 'Variant B', 'Variant C'];
+  let splits = [];
+
+  if (recType === 'warning' || recType === 'caution') {
+    // Equal split
+    const eqPct = Math.floor(100 / numGroups);
+    const remainder = 100 - eqPct * numGroups;
+    for (let i = 0; i < numGroups - 1; i++) splits.push({ pct: eqPct + (i < remainder ? 1 : 0), type: groupColors[i], label: groupLabels[i] });
+    splits.push({ pct: eqPct, type: 'control', label: 'Control' });
+  } else if (numGroups === 2) {
+    splits = [
+      { pct: variantPct, type: 'variant-a', label: 'Variant' },
+      { pct: controlPct, type: 'control', label: 'Control' }
+    ];
+  } else if (numGroups === 3) {
+    const vPct = Math.floor((100 - controlPct) / 2);
+    const vPct2 = 100 - controlPct - vPct;
+    splits = [
+      { pct: vPct, type: 'variant-a', label: 'Variant A' },
+      { pct: vPct2, type: 'variant-b', label: 'Variant B' },
+      { pct: controlPct, type: 'control', label: 'Control' }
+    ];
+  } else {
+    const vPct = Math.floor((100 - controlPct) / 3);
+    const leftover = (100 - controlPct) - vPct * 3;
+    splits = [
+      { pct: vPct + (leftover >= 1 ? 1 : 0), type: 'variant-a', label: 'Variant A' },
+      { pct: vPct + (leftover >= 2 ? 1 : 0), type: 'variant-b', label: 'Variant B' },
+      { pct: vPct, type: 'variant-c', label: 'Variant C' },
+      { pct: controlPct, type: 'control', label: 'Control' }
+    ];
+  }
+
+  let barHTML = splits.map(s => `<div class="split-segment ${s.type}" style="width:${s.pct}%">${s.pct}%</div>`).join('');
+  let legendHTML = splits.map(s => `<div class="legend-item"><span class="legend-dot ${s.type}"></span>${s.label} (${formatNum(Math.round(audience * s.pct / 100))} users)</div>`).join('');
+
+  document.getElementById('splitViz').innerHTML = `
+    <div class="split-bar-container">${barHTML}</div>
+    <div class="split-legend">${legendHTML}</div>`;
+
+  // Render stats
+  document.getElementById('reqPerGroup').textContent = formatNum(nPerGroup);
+  document.getElementById('reqTotal').textContent = formatNum(totalRequired);
+  document.getElementById('headroom').textContent = headroom < 1 ? 'Insufficient' : headroom.toFixed(1) + 'x';
+
+  // Detail rows
+  const confidencePct = ((1 - alpha) * 100).toFixed(0);
+  const powerPct = (power * 100).toFixed(0);
+  document.getElementById('detailRows').innerHTML = `
+    <div class="detail-row"><span class="detail-label">Baseline Rate</span><span class="detail-value">${(baselineRate * 100).toFixed(1)}%</span></div>
+    <div class="detail-row"><span class="detail-label">Minimum Detectable Effect</span><span class="detail-value">${(mde * 100).toFixed(1)} pp</span></div>
+    <div class="detail-row"><span class="detail-label">Confidence Level</span><span class="detail-value">${confidencePct}%</span></div>
+    <div class="detail-row"><span class="detail-label">Statistical Power</span><span class="detail-value">${powerPct}%</span></div>
+    <div class="detail-row"><span class="detail-label">Number of Groups</span><span class="detail-value">${numGroups}</span></div>
+    <div class="detail-row"><span class="detail-label">Total Audience</span><span class="detail-value">${formatNum(audience)}</span></div>`;
+
+  document.getElementById('results').classList.add('visible');
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
