@@ -324,6 +324,18 @@
   <div class="card">
     <div class="card-title">Test Parameters</div>
     <div class="form-grid">
+      <div class="form-group full-width">
+        <label for="primaryKpi">Primary KPI</label>
+        <div class="helper">Which metric are you trying to move with this test?</div>
+        <select id="primaryKpi" onchange="setKpi(this.value)">
+          <option value="" disabled selected>Select a metric...</option>
+          <option value="active_rate">Active Rate</option>
+          <option value="entry_fees">Entry Fees / User</option>
+          <option value="theo_ngr">Theo NGR / User</option>
+          <option value="other_rate">Other (Rate %)</option>
+          <option value="other_dollar">Other (Dollar $)</option>
+        </select>
+      </div>
       <div class="form-group">
         <label for="audience">Total Audience Size</label>
         <div class="input-wrapper">
@@ -339,20 +351,48 @@
           <option value="4">4 (Control + 3 Variants)</option>
         </select>
       </div>
-      <div class="form-group">
+
+      <!-- Rate fields -->
+      <div class="form-group rate-field" style="display:none;">
         <label for="baseline">Baseline Rate</label>
-        <div class="helper">What's the current rate of the metric you're trying to move? <em>e.g., if 40% of users currently retain week-over-week, enter 40.</em></div>
+        <div class="helper" id="baselineHelper">What's the current rate of the metric you're trying to move?</div>
         <div class="input-wrapper">
           <input type="number" id="baseline" placeholder="40" step="0.1" value="">
           <span class="suffix">%</span>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group rate-field" style="display:none;">
         <label for="mde">Min Detectable Effect</label>
-        <div class="helper">What's the smallest improvement that would make this test worth it? <em>e.g., if retention is 40% today and a 2 percentage point lift to 42% matters, enter 2.</em></div>
+        <div class="helper" id="mdeHelper">What's the smallest improvement that would make this test worth it?</div>
         <div class="input-wrapper">
           <input type="number" id="mde" placeholder="2" step="0.1" value="">
           <span class="suffix">pp</span>
+        </div>
+      </div>
+
+      <!-- Dollar fields -->
+      <div class="form-group dollar-field" style="display:none;">
+        <label for="baselineDollar">Current Average (Mean)</label>
+        <div class="helper" id="baselineDollarHelper">What's the current average per user for this metric?</div>
+        <div class="input-wrapper">
+          <input type="number" id="baselineDollar" placeholder="12" step="0.01" value="">
+          <span class="suffix">$</span>
+        </div>
+      </div>
+      <div class="form-group dollar-field" style="display:none;">
+        <label for="stddev">Standard Deviation</label>
+        <div class="helper" id="stddevHelper">How spread out is this metric across users? <em>Ask your data team for this — it measures how much users vary from the average.</em></div>
+        <div class="input-wrapper">
+          <input type="number" id="stddev" placeholder="18" step="0.01" value="">
+          <span class="suffix">$</span>
+        </div>
+      </div>
+      <div class="form-group dollar-field full-width" style="display:none;">
+        <label for="mdeDollar">Min Detectable Effect</label>
+        <div class="helper" id="mdeDollarHelper">What's the smallest dollar lift per user that would make this test worth it?</div>
+        <div class="input-wrapper">
+          <input type="number" id="mdeDollar" placeholder="2" step="0.01" value="">
+          <span class="suffix">$</span>
         </div>
       </div>
       <div class="form-group">
@@ -403,7 +443,7 @@
       </div>
       <div id="detailRows"></div>
       <div class="footnote">
-        Sample size calculated using normal approximation for two-proportion z-test.
+        Sample size calculated using normal approximation — two-proportion z-test for rates, two-sample t-test for dollar metrics.
         Headroom = how much larger your audience is than the minimum required.
         Higher headroom means more flexibility for unequal splits.
       </div>
@@ -412,8 +452,78 @@
 </div>
 
 <script>
+let metricType = 'rate';
+
+const kpiConfig = {
+  active_rate: {
+    type: 'rate',
+    baselineHelper: 'What % of your target users are currently active? <em>e.g., if 40% of users are active week-over-week, enter 40.</em>',
+    mdeHelper: 'What\'s the smallest lift in active rate worth caring about? <em>e.g., if moving from 40% to 42% matters, enter 2.</em>',
+    baselinePlaceholder: '40',
+    mdePlaceholder: '2'
+  },
+  entry_fees: {
+    type: 'dollar',
+    baselineDollarHelper: 'What\'s the current average entry fees per user? <em>e.g., if users average $47 in entry fees, enter 47.</em>',
+    stddevHelper: 'How much do entry fees vary across users? <em>Ask your data team — they can pull this from BigQuery.</em>',
+    mdeDollarHelper: 'What\'s the smallest dollar increase in entry fees per user worth caring about? <em>e.g., if a $3 lift matters, enter 3.</em>',
+    baselineDollarPlaceholder: '47',
+    stddevPlaceholder: '22',
+    mdeDollarPlaceholder: '3'
+  },
+  theo_ngr: {
+    type: 'dollar',
+    baselineDollarHelper: 'What\'s the current average theo NGR per user? <em>e.g., if users average $12 in theo NGR, enter 12.</em>',
+    stddevHelper: 'How much does theo NGR vary across users? <em>Ask your data team — they can pull this from BigQuery.</em>',
+    mdeDollarHelper: 'What\'s the smallest dollar increase in theo NGR per user worth caring about? <em>e.g., if a $2 lift matters, enter 2.</em>',
+    baselineDollarPlaceholder: '12',
+    stddevPlaceholder: '18',
+    mdeDollarPlaceholder: '2'
+  },
+  other_rate: {
+    type: 'rate',
+    baselineHelper: 'What\'s the current rate of the metric you\'re trying to move? <em>e.g., if 40% of users convert today, enter 40.</em>',
+    mdeHelper: 'What\'s the smallest improvement that would make this test worth it? <em>e.g., a 2 percentage point lift means enter 2.</em>',
+    baselinePlaceholder: '40',
+    mdePlaceholder: '2'
+  },
+  other_dollar: {
+    type: 'dollar',
+    baselineDollarHelper: 'What\'s the current average per user for this metric?',
+    stddevHelper: 'How spread out is this metric across users? <em>Ask your data team for this number.</em>',
+    mdeDollarHelper: 'What\'s the smallest dollar lift per user that would make this test worth it?',
+    baselineDollarPlaceholder: '12',
+    stddevPlaceholder: '18',
+    mdeDollarPlaceholder: '2'
+  }
+};
+
+function setKpi(kpi) {
+  if (!kpi) return;
+  const config = kpiConfig[kpi];
+  metricType = config.type;
+
+  document.querySelectorAll('.rate-field').forEach(el => el.style.display = config.type === 'rate' ? '' : 'none');
+  document.querySelectorAll('.dollar-field').forEach(el => el.style.display = config.type === 'dollar' ? '' : 'none');
+
+  if (config.type === 'rate') {
+    document.getElementById('baselineHelper').innerHTML = config.baselineHelper;
+    document.getElementById('mdeHelper').innerHTML = config.mdeHelper;
+    document.getElementById('baseline').placeholder = config.baselinePlaceholder;
+    document.getElementById('mde').placeholder = config.mdePlaceholder;
+  } else {
+    document.getElementById('baselineDollarHelper').innerHTML = config.baselineDollarHelper;
+    document.getElementById('stddevHelper').innerHTML = config.stddevHelper;
+    document.getElementById('mdeDollarHelper').innerHTML = config.mdeDollarHelper;
+    document.getElementById('baselineDollar').placeholder = config.baselineDollarPlaceholder;
+    document.getElementById('stddev').placeholder = config.stddevPlaceholder;
+    document.getElementById('mdeDollar').placeholder = config.mdeDollarPlaceholder;
+  }
+
+  document.getElementById('results').classList.remove('visible');
+}
+
 function zScore(alpha) {
-  // Approximation of inverse normal CDF (Abramowitz & Stegun)
   const p = 1 - alpha / 2;
   const t = Math.sqrt(-2 * Math.log(1 - p));
   const c0 = 2.515517, c1 = 0.802853, c2 = 0.010328;
@@ -425,9 +535,16 @@ function requiredSamplePerGroup(baselineRate, mde, alpha, power) {
   const p1 = baselineRate;
   const p2 = baselineRate + mde;
   const zAlpha = zScore(alpha);
-  const zBeta = zScore((1 - power) * 2); // one-sided transform
+  const zBeta = zScore((1 - power) * 2);
   const pBar = (p1 + p2) / 2;
   const n = Math.pow(zAlpha * Math.sqrt(2 * pBar * (1 - pBar)) + zBeta * Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2)), 2) / Math.pow(p2 - p1, 2);
+  return Math.ceil(n);
+}
+
+function requiredSamplePerGroupContinuous(stddev, mde, alpha, power) {
+  const zAlpha = zScore(alpha);
+  const zBeta = zScore((1 - power) * 2);
+  const n = Math.pow(zAlpha + zBeta, 2) * 2 * Math.pow(stddev, 2) / Math.pow(mde, 2);
   return Math.ceil(n);
 }
 
@@ -440,17 +557,30 @@ function formatNum(n) {
 function calculate() {
   const audience = parseInt(document.getElementById('audience').value);
   const numGroups = parseInt(document.getElementById('variants').value);
-  const baselineRate = parseFloat(document.getElementById('baseline').value) / 100;
-  const mde = parseFloat(document.getElementById('mde').value) / 100;
   const alpha = parseFloat(document.getElementById('confidence').value);
   const power = parseFloat(document.getElementById('power').value);
 
-  if (!audience || !baselineRate || !mde) {
-    alert('Please fill in all fields.');
-    return;
-  }
+  if (!audience) { alert('Please fill in the audience size.'); return; }
+  if (!document.getElementById('primaryKpi').value) { alert('Please select a Primary KPI.'); return; }
 
-  const nPerGroup = requiredSamplePerGroup(baselineRate, mde, alpha, power);
+  let nPerGroup, mdeDisplay, baselineDisplay;
+
+  if (metricType === 'rate') {
+    const baselineRate = parseFloat(document.getElementById('baseline').value) / 100;
+    const mde = parseFloat(document.getElementById('mde').value) / 100;
+    if (!baselineRate || !mde) { alert('Please fill in baseline rate and min detectable effect.'); return; }
+    nPerGroup = requiredSamplePerGroup(baselineRate, mde, alpha, power);
+    mdeDisplay = (mde * 100).toFixed(1) + ' pp';
+    baselineDisplay = (baselineRate * 100).toFixed(1) + '%';
+  } else {
+    const baselineDollar = parseFloat(document.getElementById('baselineDollar').value);
+    const stddev = parseFloat(document.getElementById('stddev').value);
+    const mdeDollar = parseFloat(document.getElementById('mdeDollar').value);
+    if (!baselineDollar && baselineDollar !== 0 || !stddev || !mdeDollar) { alert('Please fill in the current average, standard deviation, and min detectable effect.'); return; }
+    nPerGroup = requiredSamplePerGroupContinuous(stddev, mdeDollar, alpha, power);
+    mdeDisplay = '$' + mdeDollar.toFixed(2);
+    baselineDisplay = '$' + baselineDollar.toFixed(2);
+  }
   const totalRequired = nPerGroup * numGroups;
   const headroom = audience / totalRequired;
 
@@ -460,7 +590,7 @@ function calculate() {
 
   if (headroom < 1) {
     recType = 'warning';
-    recMsg = `<strong>Insufficient audience.</strong> You need at least ${formatNum(totalRequired)} users but only have ${formatNum(audience)}. Consider increasing audience size, accepting a larger MDE, or lowering confidence level.`;
+    recMsg = `<strong>Insufficient audience.</strong> You need at least ${formatNum(totalRequired)} users but only have ${formatNum(audience)}. Consider increasing audience size, accepting a larger min detectable effect, or lowering confidence level.`;
     controlPct = Math.round(100 / numGroups);
     variantPct = controlPct;
     splitLabel = Array(numGroups).fill(controlPct).join('/');
@@ -476,7 +606,7 @@ function calculate() {
       controlPct = 16; variantPct = 28;
       splitLabel = '28/28/28/16';
     }
-    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x more users than needed. This gives the promo team maximum reach while maintaining enough statistical power to detect a ${(mde * 100).toFixed(1)}pp effect.`;
+    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x more users than needed. This gives the promo team maximum reach while maintaining enough statistical power to detect a ${mdeDisplay} effect.`;
   } else if (headroom >= 1.5) {
     recType = 'go';
     if (numGroups === 2) {
@@ -489,7 +619,7 @@ function calculate() {
       controlPct = 20; variantPct = 27;
       splitLabel = '27/27/26/20';
     }
-    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x headroom. A smaller control is possible while still detecting a ${(mde * 100).toFixed(1)}pp effect at your chosen confidence.`;
+    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x headroom. A smaller control is possible while still detecting a ${mdeDisplay} effect at your chosen confidence.`;
   } else {
     controlPct = Math.round(100 / numGroups);
     variantPct = controlPct;
@@ -497,7 +627,7 @@ function calculate() {
     else if (numGroups === 3) splitLabel = '33/33/33';
     else splitLabel = '25/25/25/25';
     recType = 'caution';
-    recMsg = `<strong>Recommended: ${splitLabel} equal split.</strong> Audience size is tight (${headroom.toFixed(1)}x headroom). An equal split maximizes your power to detect a ${(mde * 100).toFixed(1)}pp effect. Unequal splits would risk an underpowered test.`;
+    recMsg = `<strong>Recommended: ${splitLabel} equal split.</strong> Audience size is tight (${headroom.toFixed(1)}x headroom). An equal split maximizes your power to detect a ${mdeDisplay} effect. Unequal splits would risk an underpowered test.`;
   }
 
   // Render recommendation
@@ -555,16 +685,23 @@ function calculate() {
   document.getElementById('reqTotal').textContent = formatNum(totalRequired);
   document.getElementById('headroom').textContent = headroom < 1 ? 'Insufficient' : headroom.toFixed(1) + 'x';
 
-  // Detail rows
   const confidencePct = ((1 - alpha) * 100).toFixed(0);
   const powerPct = (power * 100).toFixed(0);
-  document.getElementById('detailRows').innerHTML = `
-    <div class="detail-row"><span class="detail-label">Baseline Rate</span><span class="detail-value">${(baselineRate * 100).toFixed(1)}%</span></div>
-    <div class="detail-row"><span class="detail-label">Minimum Detectable Effect</span><span class="detail-value">${(mde * 100).toFixed(1)} pp</span></div>
+  const kpiSelect = document.getElementById('primaryKpi');
+  const kpiName = kpiSelect.options[kpiSelect.selectedIndex].text;
+  let detailHTML = `
+    <div class="detail-row"><span class="detail-label">Primary KPI</span><span class="detail-value">${kpiName}</span></div>
+    <div class="detail-row"><span class="detail-label">Baseline</span><span class="detail-value">${baselineDisplay}</span></div>
+    <div class="detail-row"><span class="detail-label">Minimum Detectable Effect</span><span class="detail-value">${mdeDisplay}</span></div>`;
+  if (metricType === 'dollar') {
+    detailHTML += `<div class="detail-row"><span class="detail-label">Standard Deviation</span><span class="detail-value">$${parseFloat(document.getElementById('stddev').value).toFixed(2)}</span></div>`;
+  }
+  detailHTML += `
     <div class="detail-row"><span class="detail-label">Confidence Level</span><span class="detail-value">${confidencePct}%</span></div>
     <div class="detail-row"><span class="detail-label">Statistical Power</span><span class="detail-value">${powerPct}%</span></div>
     <div class="detail-row"><span class="detail-label">Number of Groups</span><span class="detail-value">${numGroups}</span></div>
     <div class="detail-row"><span class="detail-label">Total Audience</span><span class="detail-value">${formatNum(audience)}</span></div>`;
+  document.getElementById('detailRows').innerHTML = detailHTML;
 
   document.getElementById('results').classList.add('visible');
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
