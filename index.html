@@ -7,22 +7,22 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0F1117;
-    --surface: #1A1D27;
-    --surface-hover: #22252F;
-    --border: #2A2D3A;
-    --border-focus: #6C72FF;
-    --text: #E8E9ED;
-    --text-muted: #8B8FA3;
-    --text-dim: #5C5F73;
-    --accent: #6C72FF;
-    --accent-soft: rgba(108, 114, 255, 0.12);
-    --green: #34D399;
-    --green-soft: rgba(52, 211, 153, 0.12);
-    --amber: #FBBF24;
-    --amber-soft: rgba(251, 191, 36, 0.12);
-    --red: #F87171;
-    --red-soft: rgba(248, 113, 113, 0.12);
+    --bg: #0A0A0A;
+    --surface: #161616;
+    --surface-hover: #1E1E1E;
+    --border: #2A2A2A;
+    --border-focus: #FFD000;
+    --text: #F5F5F5;
+    --text-muted: #999999;
+    --text-dim: #666666;
+    --accent: #FFD000;
+    --accent-soft: rgba(255, 208, 0, 0.12);
+    --green: #FFD000;
+    --green-soft: rgba(255, 208, 0, 0.10);
+    --amber: #FFD000;
+    --amber-soft: rgba(255, 208, 0, 0.10);
+    --red: #FF5555;
+    --red-soft: rgba(255, 85, 85, 0.12);
     --radius: 10px;
   }
 
@@ -140,11 +140,23 @@
     pointer-events: none;
   }
 
+  .helper {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+
+  .helper em {
+    color: var(--text-muted);
+    font-style: normal;
+  }
+
   .btn {
     width: 100%;
     padding: 12px;
     background: var(--accent);
-    color: #fff;
+    color: #000;
     border: none;
     border-radius: 8px;
     font-family: 'DM Sans', sans-serif;
@@ -155,7 +167,7 @@
     margin-top: 8px;
   }
 
-  .btn:hover { background: #5A60E6; transform: translateY(-1px); }
+  .btn:hover { background: #E6BB00; transform: translateY(-1px); }
   .btn:active { transform: translateY(0); }
 
   /* Results */
@@ -201,18 +213,18 @@
   }
 
   .recommendation.go {
-    background: var(--green-soft);
-    border: 1px solid rgba(52, 211, 153, 0.25);
+    background: rgba(255, 208, 0, 0.10);
+    border: 1px solid rgba(255, 208, 0, 0.25);
   }
 
   .recommendation.caution {
-    background: var(--amber-soft);
-    border: 1px solid rgba(251, 191, 36, 0.25);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   .recommendation.warning {
     background: var(--red-soft);
-    border: 1px solid rgba(248, 113, 113, 0.25);
+    border: 1px solid rgba(255, 85, 85, 0.25);
   }
 
   .rec-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
@@ -243,9 +255,10 @@
     transition: width 0.4s ease;
   }
 
-  .split-segment.control { background: #4B5073; }
-  .split-segment.variant-a { background: var(--accent); }
-  .split-segment.variant-b { background: #9B6CFF; }
+  .split-segment.control { background: #444444; }
+  .split-segment.variant-a { background: #FFD000; color: #000; }
+  .split-segment.variant-b { background: #F5F5F5; color: #000; }
+  .split-segment.variant-c { background: #B8960A; color: #fff; }
 
   .split-legend {
     display: flex;
@@ -267,9 +280,10 @@
     border-radius: 50%;
   }
 
-  .legend-dot.control { background: #4B5073; }
-  .legend-dot.variant-a { background: var(--accent); }
-  .legend-dot.variant-b { background: #9B6CFF; }
+  .legend-dot.control { background: #444444; }
+  .legend-dot.variant-a { background: #FFD000; }
+  .legend-dot.variant-b { background: #F5F5F5; }
+  .legend-dot.variant-c { background: #B8960A; }
 
   .detail-row {
     display: flex;
@@ -322,10 +336,12 @@
         <select id="variants">
           <option value="2">2 (Control + 1 Variant)</option>
           <option value="3">3 (Control + 2 Variants)</option>
+          <option value="4">4 (Control + 3 Variants)</option>
         </select>
       </div>
       <div class="form-group">
         <label for="baseline">Baseline Rate</label>
+        <div class="helper">What's the current rate of the metric you're trying to move? <em>e.g., if 40% of users currently retain week-over-week, enter 40.</em></div>
         <div class="input-wrapper">
           <input type="number" id="baseline" placeholder="40" step="0.1" value="">
           <span class="suffix">%</span>
@@ -333,6 +349,7 @@
       </div>
       <div class="form-group">
         <label for="mde">Min Detectable Effect</label>
+        <div class="helper">What's the smallest improvement that would make this test worth it? <em>e.g., if retention is 40% today and a 2 percentage point lift to 42% matters, enter 2.</em></div>
         <div class="input-wrapper">
           <input type="number" id="mde" placeholder="2" step="0.1" value="">
           <span class="suffix">pp</span>
@@ -340,6 +357,7 @@
       </div>
       <div class="form-group">
         <label for="confidence">Confidence Level</label>
+        <div class="helper">How sure do you need to be that the results are real and not random noise? <em>95% is the gold standard. Use 90% for faster, lower-stakes tests. 80% if you just need a gut check.</em></div>
         <select id="confidence">
           <option value="0.05">95% — Definitive (α = 0.05)</option>
           <option value="0.10">90% — Directional (α = 0.10)</option>
@@ -348,6 +366,7 @@
       </div>
       <div class="form-group">
         <label for="power">Statistical Power</label>
+        <div class="helper">How likely are we to detect a real effect if one actually exists? <em>80% is standard — it means a 1-in-5 chance we miss a real winner. 90% reduces that risk but needs more users.</em></div>
         <select id="power">
           <option value="0.80">80% (Standard)</option>
           <option value="0.90">90% (Conservative)</option>
@@ -444,34 +463,39 @@ function calculate() {
     recMsg = `<strong>Insufficient audience.</strong> You need at least ${formatNum(totalRequired)} users but only have ${formatNum(audience)}. Consider increasing audience size, accepting a larger MDE, or lowering confidence level.`;
     controlPct = Math.round(100 / numGroups);
     variantPct = controlPct;
-    splitLabel = `${controlPct}/${variantPct}` + (numGroups === 3 ? `/${variantPct}` : '');
+    splitLabel = Array(numGroups).fill(controlPct).join('/');
   } else if (headroom >= 3) {
-    // Lots of headroom — can do aggressive unequal split
+    recType = 'go';
     if (numGroups === 2) {
       controlPct = 20; variantPct = 80;
       splitLabel = '80/20';
-    } else {
+    } else if (numGroups === 3) {
       controlPct = 20; variantPct = 40;
       splitLabel = '40/40/20';
+    } else {
+      controlPct = 16; variantPct = 28;
+      splitLabel = '28/28/28/16';
     }
-    recType = 'go';
     recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x more users than needed. This gives the promo team maximum reach while maintaining enough statistical power to detect a ${(mde * 100).toFixed(1)}pp effect.`;
   } else if (headroom >= 1.5) {
-    // Moderate headroom — slight unequal ok
+    recType = 'go';
     if (numGroups === 2) {
       controlPct = 30; variantPct = 70;
       splitLabel = '70/30';
-    } else {
+    } else if (numGroups === 3) {
       controlPct = 25; variantPct = 37;
       splitLabel = '38/37/25';
+    } else {
+      controlPct = 20; variantPct = 27;
+      splitLabel = '27/27/26/20';
     }
-    recType = 'go';
     recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x headroom. A smaller control is possible while still detecting a ${(mde * 100).toFixed(1)}pp effect at your chosen confidence.`;
   } else {
-    // Tight — need equal split
     controlPct = Math.round(100 / numGroups);
     variantPct = controlPct;
-    splitLabel = numGroups === 2 ? '50/50' : '33/33/33';
+    if (numGroups === 2) splitLabel = '50/50';
+    else if (numGroups === 3) splitLabel = '33/33/33';
+    else splitLabel = '25/25/25/25';
     recType = 'caution';
     recMsg = `<strong>Recommended: ${splitLabel} equal split.</strong> Audience size is tight (${headroom.toFixed(1)}x headroom). An equal split maximizes your power to detect a ${(mde * 100).toFixed(1)}pp effect. Unequal splits would risk an underpowered test.`;
   }
@@ -485,30 +509,42 @@ function calculate() {
     </div>`;
 
   // Render split visualization
-  let barHTML = '';
-  let legendHTML = '';
-  if (numGroups === 2) {
-    const cPct = recType === 'warning' ? 50 : controlPct;
-    const vPct = recType === 'warning' ? 50 : variantPct;
-    barHTML = `
-      <div class="split-segment variant-a" style="width:${vPct}%">${vPct}%</div>
-      <div class="split-segment control" style="width:${cPct}%">${cPct}%</div>`;
-    legendHTML = `
-      <div class="legend-item"><span class="legend-dot variant-a"></span>Variant (${formatNum(Math.round(audience * vPct / 100))} users)</div>
-      <div class="legend-item"><span class="legend-dot control"></span>Control (${formatNum(Math.round(audience * cPct / 100))} users)</div>`;
+  const groupColors = ['variant-a', 'variant-b', 'variant-c'];
+  const groupLabels = ['Variant A', 'Variant B', 'Variant C'];
+  let splits = [];
+
+  if (recType === 'warning' || recType === 'caution') {
+    // Equal split
+    const eqPct = Math.floor(100 / numGroups);
+    const remainder = 100 - eqPct * numGroups;
+    for (let i = 0; i < numGroups - 1; i++) splits.push({ pct: eqPct + (i < remainder ? 1 : 0), type: groupColors[i], label: groupLabels[i] });
+    splits.push({ pct: eqPct, type: 'control', label: 'Control' });
+  } else if (numGroups === 2) {
+    splits = [
+      { pct: variantPct, type: 'variant-a', label: 'Variant' },
+      { pct: controlPct, type: 'control', label: 'Control' }
+    ];
+  } else if (numGroups === 3) {
+    const vPct = Math.floor((100 - controlPct) / 2);
+    const vPct2 = 100 - controlPct - vPct;
+    splits = [
+      { pct: vPct, type: 'variant-a', label: 'Variant A' },
+      { pct: vPct2, type: 'variant-b', label: 'Variant B' },
+      { pct: controlPct, type: 'control', label: 'Control' }
+    ];
   } else {
-    const vaPct = recType === 'warning' ? 33 : (recType === 'caution' ? 33 : variantPct);
-    const vbPct = recType === 'warning' ? 33 : (recType === 'caution' ? 33 : variantPct);
-    const cPct = recType === 'warning' ? 34 : (recType === 'caution' ? 34 : controlPct);
-    barHTML = `
-      <div class="split-segment variant-a" style="width:${vaPct}%">${vaPct}%</div>
-      <div class="split-segment variant-b" style="width:${vbPct}%">${vbPct}%</div>
-      <div class="split-segment control" style="width:${cPct}%">${cPct}%</div>`;
-    legendHTML = `
-      <div class="legend-item"><span class="legend-dot variant-a"></span>Variant A (${formatNum(Math.round(audience * vaPct / 100))} users)</div>
-      <div class="legend-item"><span class="legend-dot variant-b"></span>Variant B (${formatNum(Math.round(audience * vbPct / 100))} users)</div>
-      <div class="legend-item"><span class="legend-dot control"></span>Control (${formatNum(Math.round(audience * cPct / 100))} users)</div>`;
+    const vPct = Math.floor((100 - controlPct) / 3);
+    const leftover = (100 - controlPct) - vPct * 3;
+    splits = [
+      { pct: vPct + (leftover >= 1 ? 1 : 0), type: 'variant-a', label: 'Variant A' },
+      { pct: vPct + (leftover >= 2 ? 1 : 0), type: 'variant-b', label: 'Variant B' },
+      { pct: vPct, type: 'variant-c', label: 'Variant C' },
+      { pct: controlPct, type: 'control', label: 'Control' }
+    ];
   }
+
+  let barHTML = splits.map(s => `<div class="split-segment ${s.type}" style="width:${s.pct}%">${s.pct}%</div>`).join('');
+  let legendHTML = splits.map(s => `<div class="legend-item"><span class="legend-dot ${s.type}"></span>${s.label} (${formatNum(Math.round(audience * s.pct / 100))} users)</div>`).join('');
 
   document.getElementById('splitViz').innerHTML = `
     <div class="split-bar-container">${barHTML}</div>
