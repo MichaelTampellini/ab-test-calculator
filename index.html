@@ -12,9 +12,9 @@
     --surface-hover: #1E1E1E;
     --border: #2A2A2A;
     --border-focus: #FFD000;
-    --text: #F5F5F5;
-    --text-muted: #999999;
-    --text-dim: #666666;
+    --text: #FFFFFF;
+    --text-muted: #CCCCCC;
+    --text-dim: #888888;
     --accent: #FFD000;
     --accent-soft: rgba(255, 208, 0, 0.12);
     --green: #FFD000;
@@ -47,15 +47,16 @@
   }
 
   .header h1 {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     letter-spacing: -0.3px;
     margin-bottom: 6px;
+    color: var(--accent);
   }
 
   .header p {
-    font-size: 14px;
-    color: var(--text-muted);
+    font-size: 15px;
+    color: var(--text);
   }
 
   .card {
@@ -68,10 +69,10 @@
 
   .card-title {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    color: var(--text-muted);
+    color: var(--accent);
     margin-bottom: 20px;
   }
 
@@ -92,9 +93,9 @@
   }
 
   label {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
   }
 
   .input-wrapper {
@@ -123,7 +124,7 @@
 
   select {
     cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%238B8FA3' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%23CCCCCC' stroke-width='1.5'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 32px;
@@ -135,20 +136,20 @@
     top: 50%;
     transform: translateY(-50%);
     font-size: 12px;
-    color: var(--text-dim);
+    color: var(--text-muted);
     font-family: 'DM Sans', sans-serif;
     pointer-events: none;
   }
 
   .helper {
     font-size: 12px;
-    color: var(--text-dim);
+    color: var(--text-muted);
     line-height: 1.5;
     margin-top: 2px;
   }
 
   .helper em {
-    color: var(--text-muted);
+    color: var(--accent);
     font-style: normal;
   }
 
@@ -183,9 +184,9 @@
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 8px;
-    color: var(--text-muted);
+    color: var(--text);
     font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -209,7 +210,7 @@
   .preset-label {
     display: block;
     font-size: 11px;
-    color: var(--text-dim);
+    color: var(--text-muted);
     margin-top: 2px;
   }
 
@@ -219,7 +220,7 @@
 
   .or-divider {
     font-size: 11px;
-    color: var(--text-dim);
+    color: var(--text-muted);
     text-align: center;
     margin: 6px 0 2px 0;
   }
@@ -244,9 +245,10 @@
 
   .result-item .value {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
     margin-bottom: 2px;
+    color: var(--accent);
   }
 
   .result-item .label {
@@ -325,7 +327,7 @@
     align-items: center;
     gap: 6px;
     font-size: 12px;
-    color: var(--text-muted);
+    color: var(--text);
   }
 
   .legend-dot {
@@ -357,7 +359,7 @@
 
   .footnote {
     font-size: 12px;
-    color: var(--text-dim);
+    color: var(--text-muted);
     margin-top: 16px;
     line-height: 1.6;
   }
