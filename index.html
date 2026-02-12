@@ -170,6 +170,60 @@
   .btn:hover { background: #E6BB00; transform: translateY(-1px); }
   .btn:active { transform: translateY(0); }
 
+  .preset-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  .preset-btn {
+    flex: 1;
+    padding: 8px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .preset-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    background: var(--accent-soft);
+  }
+
+  .preset-btn.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .preset-label {
+    display: block;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .preset-btn.active .preset-label {
+    color: var(--accent);
+  }
+
+  .or-divider {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    margin: 6px 0 2px 0;
+  }
+
   /* Results */
   .results { display: none; }
   .results.visible { display: block; }
@@ -363,9 +417,15 @@
       </div>
       <div class="form-group rate-field" style="display:none;">
         <label for="mde">Min Detectable Effect</label>
-        <div class="helper" id="mdeHelper">What's the smallest improvement that would make this test worth it?</div>
+        <div class="helper" id="mdeHelper">If this promo didn't move the metric by at least ___, would you still consider it a win?</div>
+        <div class="preset-group" id="ratePresets">
+          <button class="preset-btn" onclick="setRatePreset(1, this)">1 pp<span class="preset-label">Small lift</span></button>
+          <button class="preset-btn" onclick="setRatePreset(2, this)">2–3 pp<span class="preset-label">Medium lift</span></button>
+          <button class="preset-btn" onclick="setRatePreset(5, this)">5+ pp<span class="preset-label">Large lift</span></button>
+        </div>
+        <div class="or-divider">or enter a custom value</div>
         <div class="input-wrapper">
-          <input type="number" id="mde" placeholder="2" step="0.1" value="">
+          <input type="number" id="mde" placeholder="2" step="0.1" value="" oninput="clearPresets('ratePresets')">
           <span class="suffix">pp</span>
         </div>
       </div>
@@ -389,15 +449,21 @@
       </div>
       <div class="form-group dollar-field full-width" style="display:none;">
         <label for="mdeDollar">Min Detectable Effect</label>
-        <div class="helper" id="mdeDollarHelper">What's the smallest dollar lift per user that would make this test worth it?</div>
+        <div class="helper" id="mdeDollarHelper">If this promo didn't move the metric by at least $__, would you still consider it a win?</div>
+        <div class="preset-group" id="dollarPresets">
+          <button class="preset-btn" onclick="setDollarPreset(1, this)">$1 / user<span class="preset-label">Small lift</span></button>
+          <button class="preset-btn" onclick="setDollarPreset(3, this)">$3–5 / user<span class="preset-label">Medium lift</span></button>
+          <button class="preset-btn" onclick="setDollarPreset(8, this)">$8+ / user<span class="preset-label">Large lift</span></button>
+        </div>
+        <div class="or-divider">or enter a custom value</div>
         <div class="input-wrapper">
-          <input type="number" id="mdeDollar" placeholder="2" step="0.01" value="">
+          <input type="number" id="mdeDollar" placeholder="2" step="0.01" value="" oninput="clearPresets('dollarPresets')">
           <span class="suffix">$</span>
         </div>
       </div>
       <div class="form-group">
         <label for="confidence">Confidence Level</label>
-        <div class="helper">How sure do you need to be that the results are real and not random noise? <em>95% is the gold standard. Use 90% for faster, lower-stakes tests. 80% if you just need a gut check.</em></div>
+        <div class="helper">Use the same confidence level you selected in the section above. <em>If you haven't decided yet, go back and fill that out first.</em></div>
         <select id="confidence">
           <option value="0.05">95% — Definitive (α = 0.05)</option>
           <option value="0.10">90% — Directional (α = 0.10)</option>
@@ -458,7 +524,7 @@ const kpiConfig = {
   active_rate: {
     type: 'rate',
     baselineHelper: 'What % of your target users are currently active? <em>e.g., if 40% of users are active week-over-week, enter 40.</em>',
-    mdeHelper: 'What\'s the smallest lift in active rate worth caring about? <em>e.g., if moving from 40% to 42% matters, enter 2.</em>',
+    mdeHelper: 'If this promo didn\'t move active rate by at least ___, would you still consider it a win?',
     baselinePlaceholder: '40',
     mdePlaceholder: '2'
   },
@@ -466,7 +532,7 @@ const kpiConfig = {
     type: 'dollar',
     baselineDollarHelper: 'What\'s the current average entry fees per user? <em>e.g., if users average $47 in entry fees, enter 47.</em>',
     stddevHelper: 'How much do entry fees vary across users? <em>Ask your data team — they can pull this from BigQuery.</em>',
-    mdeDollarHelper: 'What\'s the smallest dollar increase in entry fees per user worth caring about? <em>e.g., if a $3 lift matters, enter 3.</em>',
+    mdeDollarHelper: 'If this promo didn\'t lift entry fees per user by at least $__, would you still consider it a win?',
     baselineDollarPlaceholder: '47',
     stddevPlaceholder: '22',
     mdeDollarPlaceholder: '3'
@@ -475,7 +541,7 @@ const kpiConfig = {
     type: 'dollar',
     baselineDollarHelper: 'What\'s the current average theo NGR per user? <em>e.g., if users average $12 in theo NGR, enter 12.</em>',
     stddevHelper: 'How much does theo NGR vary across users? <em>Ask your data team — they can pull this from BigQuery.</em>',
-    mdeDollarHelper: 'What\'s the smallest dollar increase in theo NGR per user worth caring about? <em>e.g., if a $2 lift matters, enter 2.</em>',
+    mdeDollarHelper: 'If this promo didn\'t lift theo NGR per user by at least $__, would you still consider it a win?',
     baselineDollarPlaceholder: '12',
     stddevPlaceholder: '18',
     mdeDollarPlaceholder: '2'
@@ -483,7 +549,7 @@ const kpiConfig = {
   other_rate: {
     type: 'rate',
     baselineHelper: 'What\'s the current rate of the metric you\'re trying to move? <em>e.g., if 40% of users convert today, enter 40.</em>',
-    mdeHelper: 'What\'s the smallest improvement that would make this test worth it? <em>e.g., a 2 percentage point lift means enter 2.</em>',
+    mdeHelper: 'If this promo didn\'t move the metric by at least ___, would you still consider it a win?',
     baselinePlaceholder: '40',
     mdePlaceholder: '2'
   },
@@ -491,7 +557,7 @@ const kpiConfig = {
     type: 'dollar',
     baselineDollarHelper: 'What\'s the current average per user for this metric?',
     stddevHelper: 'How spread out is this metric across users? <em>Ask your data team for this number.</em>',
-    mdeDollarHelper: 'What\'s the smallest dollar lift per user that would make this test worth it?',
+    mdeDollarHelper: 'If this promo didn\'t lift the metric by at least $__, would you still consider it a win?',
     baselineDollarPlaceholder: '12',
     stddevPlaceholder: '18',
     mdeDollarPlaceholder: '2'
@@ -505,6 +571,7 @@ function setKpi(kpi) {
 
   document.querySelectorAll('.rate-field').forEach(el => el.style.display = config.type === 'rate' ? '' : 'none');
   document.querySelectorAll('.dollar-field').forEach(el => el.style.display = config.type === 'dollar' ? '' : 'none');
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
 
   if (config.type === 'rate') {
     document.getElementById('baselineHelper').innerHTML = config.baselineHelper;
@@ -521,6 +588,22 @@ function setKpi(kpi) {
   }
 
   document.getElementById('results').classList.remove('visible');
+}
+
+function setRatePreset(value, btn) {
+  document.getElementById('mde').value = value;
+  document.querySelectorAll('#ratePresets .preset-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setDollarPreset(value, btn) {
+  document.getElementById('mdeDollar').value = value;
+  document.querySelectorAll('#dollarPresets .preset-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function clearPresets(groupId) {
+  document.querySelectorAll('#' + groupId + ' .preset-btn').forEach(b => b.classList.remove('active'));
 }
 
 function zScore(alpha) {
