@@ -7,22 +7,22 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0F1117;
-    --surface: #1A1D27;
-    --surface-hover: #22252F;
-    --border: #2A2D3A;
+    --bg: #F5F5F7;
+    --surface: #FFFFFF;
+    --surface-hover: #EDEDF0;
+    --border: #DDDDE2;
     --border-focus: #6C72FF;
-    --text: #E8E9ED;
-    --text-muted: #8B8FA3;
-    --text-dim: #5C5F73;
+    --text: #1C1C1E;
+    --text-muted: #6B6B78;
+    --text-dim: #9494A3;
     --accent: #6C72FF;
-    --accent-soft: rgba(108, 114, 255, 0.12);
-    --green: #34D399;
-    --green-soft: rgba(52, 211, 153, 0.12);
-    --amber: #FBBF24;
-    --amber-soft: rgba(251, 191, 36, 0.12);
-    --red: #F87171;
-    --red-soft: rgba(248, 113, 113, 0.12);
+    --accent-soft: rgba(108, 114, 255, 0.10);
+    --green: #22A06B;
+    --green-soft: rgba(34, 160, 107, 0.10);
+    --amber: #CF8600;
+    --amber-soft: rgba(207, 134, 0, 0.10);
+    --red: #DE350B;
+    --red-soft: rgba(222, 53, 11, 0.08);
     --radius: 10px;
   }
 
@@ -47,8 +47,8 @@
   }
 
   .header h1 {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 26px;
+    font-weight: 800;
     letter-spacing: -0.3px;
     margin-bottom: 6px;
   }
@@ -64,14 +64,20 @@
     border-radius: var(--radius);
     padding: 24px;
     margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .card-highlight {
+    background: #FFFDE7;
+    border-color: #F5E6A3;
   }
 
   .card-title {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    color: var(--text-muted);
+    color: var(--text);
     margin-bottom: 20px;
   }
 
@@ -92,9 +98,9 @@
   }
 
   label {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
   }
 
   .input-wrapper {
@@ -123,7 +129,7 @@
 
   select {
     cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%238B8FA3' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%236B6B78' stroke-width='1.5'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 32px;
@@ -170,6 +176,60 @@
   .btn:hover { background: #5A60E6; transform: translateY(-1px); }
   .btn:active { transform: translateY(0); }
 
+  .preset-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  .preset-btn {
+    flex: 1;
+    padding: 8px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .preset-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    background: var(--accent-soft);
+  }
+
+  .preset-btn.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .preset-label {
+    display: block;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .preset-btn.active .preset-label {
+    color: var(--accent);
+  }
+
+  .or-divider {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    margin: 6px 0 2px 0;
+  }
+
   /* Results */
   .results { display: none; }
   .results.visible { display: block; }
@@ -214,17 +274,17 @@
 
   .recommendation.go {
     background: var(--green-soft);
-    border: 1px solid rgba(52, 211, 153, 0.25);
+    border: 1px solid rgba(34, 160, 107, 0.25);
   }
 
   .recommendation.caution {
     background: var(--amber-soft);
-    border: 1px solid rgba(251, 191, 36, 0.25);
+    border: 1px solid rgba(207, 134, 0, 0.25);
   }
 
   .recommendation.warning {
     background: var(--red-soft);
-    border: 1px solid rgba(248, 113, 113, 0.25);
+    border: 1px solid rgba(222, 53, 11, 0.2);
   }
 
   .rec-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
@@ -255,10 +315,10 @@
     transition: width 0.4s ease;
   }
 
-  .split-segment.control { background: #4B5073; }
-  .split-segment.variant-a { background: var(--accent); }
-  .split-segment.variant-b { background: #9B6CFF; }
-  .split-segment.variant-c { background: #E06CFF; }
+  .split-segment.control { background: #DDDDE2; color: #1C1C1E; }
+  .split-segment.variant-a { background: #6C72FF; color: #FFFFFF; }
+  .split-segment.variant-b { background: #9B6CFF; color: #FFFFFF; }
+  .split-segment.variant-c { background: #B8A0FF; color: #1C1C1E; }
 
   .split-legend {
     display: flex;
@@ -271,7 +331,7 @@
     align-items: center;
     gap: 6px;
     font-size: 12px;
-    color: var(--text-muted);
+    color: var(--text);
   }
 
   .legend-dot {
@@ -280,10 +340,10 @@
     border-radius: 50%;
   }
 
-  .legend-dot.control { background: #4B5073; }
-  .legend-dot.variant-a { background: var(--accent); }
+  .legend-dot.control { background: #DDDDE2; border: 1px solid #C0C0C6; }
+  .legend-dot.variant-a { background: #6C72FF; }
   .legend-dot.variant-b { background: #9B6CFF; }
-  .legend-dot.variant-c { background: #E06CFF; }
+  .legend-dot.variant-c { background: #B8A0FF; }
 
   .detail-row {
     display: flex;
@@ -312,6 +372,79 @@
     .form-grid { grid-template-columns: 1fr; }
     .result-grid { grid-template-columns: 1fr; }
   }
+
+  .section-divider {
+    display: flex;
+    align-items: center;
+    margin: 32px 0;
+    gap: 16px;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-divider span {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .quiz-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 14px 16px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .quiz-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .quiz-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    box-shadow: 0 0 0 2px var(--accent-soft);
+  }
+
+  .quiz-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .quiz-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .quiz-btn.selected .quiz-label {
+    color: var(--accent);
+  }
 </style>
 </head>
 <body>
@@ -324,6 +457,18 @@
   <div class="card">
     <div class="card-title">Test Parameters</div>
     <div class="form-grid">
+      <div class="form-group full-width">
+        <label for="primaryKpi">Primary KPI</label>
+        <div class="helper">Which metric are you trying to move with this test?</div>
+        <select id="primaryKpi" onchange="setKpi(this.value)">
+          <option value="" disabled selected>Select a metric...</option>
+          <option value="active_rate">Active Rate</option>
+          <option value="entry_fees">Entry Fees / User</option>
+          <option value="theo_ngr">Theo NGR / User</option>
+          <option value="other_rate">Other (Rate %)</option>
+          <option value="other_dollar">Other (Dollar $)</option>
+        </select>
+      </div>
       <div class="form-group">
         <label for="audience">Total Audience Size</label>
         <div class="input-wrapper">
@@ -339,35 +484,67 @@
           <option value="4">4 (Control + 3 Variants)</option>
         </select>
       </div>
-      <div class="form-group">
+
+      <!-- Rate fields -->
+      <div class="form-group rate-field" style="display:none;">
         <label for="baseline">Baseline Rate</label>
-        <div class="helper">What's the current rate of the metric you're trying to move? <em>e.g., if 40% of users currently retain week-over-week, enter 40.</em></div>
+        <div class="helper" id="baselineHelper">What's the current rate of the metric you're trying to move?</div>
         <div class="input-wrapper">
           <input type="number" id="baseline" placeholder="40" step="0.1" value="">
           <span class="suffix">%</span>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group rate-field" style="display:none;">
         <label for="mde">Min Detectable Effect</label>
-        <div class="helper">What's the smallest improvement that would make this test worth it? <em>e.g., if retention is 40% today and a 2 percentage point lift to 42% matters, enter 2.</em></div>
+        <div class="helper" id="mdeHelper">If this promo didn't move the metric by at least ___, would you still consider it a win?</div>
+        <select id="mde" class="mde-select">
+          <option value="1">Small lift (1 pp)</option>
+          <option value="2" selected>Medium lift (2–3 pp) — Standard</option>
+          <option value="5">Large lift (5+ pp)</option>
+        </select>
+      </div>
+
+      <!-- Dollar fields -->
+      <div class="form-group dollar-field" style="display:none;">
+        <label for="baselineDollar">Current Average (Mean)</label>
+        <div class="helper" id="baselineDollarHelper">What's the current average per user for this metric?</div>
         <div class="input-wrapper">
-          <input type="number" id="mde" placeholder="2" step="0.1" value="">
-          <span class="suffix">pp</span>
+          <input type="number" id="baselineDollar" placeholder="12" step="0.01" value="">
+          <span class="suffix">$</span>
         </div>
+      </div>
+      <div class="form-group dollar-field" style="display:none;">
+        <label for="stddev">Standard Deviation</label>
+        <div class="helper" id="stddevHelper">How spread out is this metric across users? <em>Ask your data team for this — it measures how much users vary from the average.</em></div>
+        <div class="input-wrapper">
+          <input type="number" id="stddev" placeholder="18" step="0.01" value="">
+          <span class="suffix">$</span>
+        </div>
+      </div>
+      <div class="form-group dollar-field full-width" style="display:none;">
+        <label for="mdeDollar">Min Detectable Effect</label>
+        <div class="helper" id="mdeDollarHelper">If this promo didn't lift the metric by at least $__, would you still consider it a win?</div>
+        <select id="mdeDollar" class="mde-select">
+          <option value="1">Small lift ($1 / user)</option>
+          <option value="3" selected>Medium lift ($3–5 / user) — Standard</option>
+          <option value="8">Large lift ($8+ / user)</option>
+        </select>
       </div>
       <div class="form-group">
         <label for="confidence">Confidence Level</label>
+        <div class="helper">Use the same confidence level you selected in the section above. <em>If you haven't decided yet, go back and fill that out first.</em></div>
         <select id="confidence">
-          <option value="0.05">95% — Definitive (α = 0.05)</option>
-          <option value="0.10">90% — Directional (α = 0.10)</option>
-          <option value="0.20">80% — Sanity Check (α = 0.20)</option>
+          <option value="0.05" selected>95% — Definitive — Standard</option>
+          <option value="0.10">90% — Directional</option>
+          <option value="0.20">80% — Sanity Check</option>
         </select>
       </div>
       <div class="form-group">
         <label for="power">Statistical Power</label>
+        <div class="helper">How likely are we to detect a real effect if one actually exists? <em>80% is standard — it means a 1-in-5 chance we miss a real winner. 90% reduces that risk but needs more users.</em></div>
         <select id="power">
-          <option value="0.80">80% (Standard)</option>
-          <option value="0.90">90% (Conservative)</option>
+          <option value="0.80">80% — Standard</option>
+          <option value="0.90">90% — Conservative</option>
         </select>
       </div>
       <div class="form-group full-width">
@@ -377,41 +554,282 @@
   </div>
 
   <div class="results" id="results">
-    <div class="card">
+    <div class="card card-highlight">
       <div class="card-title">Recommendation</div>
       <div id="recommendation"></div>
       <div id="splitViz" class="split-viz"></div>
     </div>
+  </div>
 
-    <div class="card">
-      <div class="card-title">Details</div>
-      <div class="result-grid">
-        <div class="result-item">
-          <div class="value" id="reqPerGroup">—</div>
-          <div class="label">Required / Group</div>
-        </div>
-        <div class="result-item">
-          <div class="value" id="reqTotal">—</div>
-          <div class="label">Total Required</div>
-        </div>
-        <div class="result-item">
-          <div class="value" id="headroom">—</div>
-          <div class="label">Headroom</div>
-        </div>
-      </div>
-      <div id="detailRows"></div>
-      <div class="footnote">
-        Sample size calculated using normal approximation for two-proportion z-test.
-        Headroom = how much larger your audience is than the minimum required.
-        Higher headroom means more flexibility for unequal splits.
-      </div>
+  <div class="section-divider">
+    <span>Duration Guide</span>
+  </div>
+
+  <div class="header">
+    <h1>Test Duration Guide</h1>
+    <p>Answer a few questions about your test and we'll recommend how long to run it. There's no exact formula for duration — this is guided judgment based on your promo strategy and product context.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Question 1 of 4</div>
+    <label>What are you trying to measure?</label>
+    <div class="helper">This is the biggest factor in how long your test needs to run.</div>
+    <div class="quiz-options" id="q1">
+      <button class="quiz-btn" onclick="selectQuiz('q1', 'action', this)">
+        <span class="quiz-label">One-time action</span>
+        <span class="quiz-desc">Did the user do the thing? (e.g., created an entry, made a deposit)</span>
+      </button>
+      <button class="quiz-btn" onclick="selectQuiz('q1', 'behavior', this)">
+        <span class="quiz-label">Sustained behavior change</span>
+        <span class="quiz-desc">Did the user change a habit? (e.g., regularly plays NBA, increased weekly entries)</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Question 2 of 4</div>
+    <label>How often are users receiving the promo or intervention?</label>
+    <div class="helper">This is about how frequently you're sending the treatment — not how often users can play. More frequent touches means less calendar time needed.</div>
+    <div class="quiz-options" id="q2">
+      <button class="quiz-btn" onclick="selectQuiz('q2', 'daily', this)">
+        <span class="quiz-label">Daily or near-daily</span>
+        <span class="quiz-desc">Users are getting a promo or push every day or every other day</span>
+      </button>
+      <button class="quiz-btn" onclick="selectQuiz('q2', 'weekly', this)">
+        <span class="quiz-label">Weekly</span>
+        <span class="quiz-desc">Users get a promo or intervention ~once per week (e.g., weekly NBA cross-sell offer)</span>
+      </button>
+      <button class="quiz-btn" onclick="selectQuiz('q2', 'sporadic', this)">
+        <span class="quiz-label">Sporadic / event-driven</span>
+        <span class="quiz-desc">Promos go out based on the schedule or specific triggers, not a fixed cadence</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Question 3 of 4</div>
+    <label>Are there calendar factors to work around?</label>
+    <div class="helper">Major events, holidays, or dead periods can distort results. It's better to plan around them.</div>
+    <div class="quiz-options" id="q3">
+      <button class="quiz-btn" onclick="selectQuiz('q3', 'clean', this)">
+        <span class="quiz-label">Clean window</span>
+        <span class="quiz-desc">No major events, holidays, or anomalies during the test period</span>
+      </button>
+      <button class="quiz-btn" onclick="selectQuiz('q3', 'minor', this)">
+        <span class="quiz-label">Minor events</span>
+        <span class="quiz-desc">Some events but nothing that would majorly distort behavior (e.g., a holiday weekend)</span>
+      </button>
+      <button class="quiz-btn" onclick="selectQuiz('q3', 'major', this)">
+        <span class="quiz-label">Major disruption</span>
+        <span class="quiz-desc">All-Star break, playoffs, off-season, major holiday — behavior will be abnormal</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Question 4 of 4</div>
+    <label>What's the business appetite for waiting?</label>
+    <div class="helper">Longer tests give cleaner results, but sometimes the business needs to move.</div>
+    <div class="quiz-options" id="q4">
+      <button class="quiz-btn" onclick="selectQuiz('q4', 'fast', this)">
+        <span class="quiz-label">Need results fast</span>
+        <span class="quiz-desc">Leadership wants a read ASAP — willing to accept more uncertainty</span>
+      </button>
+      <button class="quiz-btn" onclick="selectQuiz('q4', 'balanced', this)">
+        <span class="quiz-label">Balanced</span>
+        <span class="quiz-desc">Want solid results but don't need to wait forever</span>
+      </button>
+      <button class="quiz-btn" onclick="selectQuiz('q4', 'patient', this)">
+        <span class="quiz-label">Can be patient</span>
+        <span class="quiz-desc">Run it right — we'd rather have a clean read than a fast one</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="form-group full-width" style="padding: 0 0 16px 0;">
+    <button class="btn" onclick="calculateDuration()">Get Duration Recommendation</button>
+  </div>
+
+  <div id="durationResults">
+    <div class="card card-highlight" id="durationCard" style="display:none;">
+      <div class="card-title">Recommended Duration</div>
+      <div id="durationRec"></div>
+      <div id="durationBreakdown"></div>
+      <div class="footnote" style="margin-top: 12px;">This is a recommended starting point, not an exact answer. Final duration should factor in your specific promo cadence, the sports calendar, and how long you'd expect the behavior to take root. Two smart people could reasonably land on different numbers — the goal is to be in the right range.</div>
     </div>
   </div>
 </div>
 
 <script>
+let metricType = 'rate';
+
+function toggleTestType(type) {}
+
+const quizAnswers = {};
+
+function selectQuiz(question, answer, btn) {
+  quizAnswers[question] = answer;
+  document.querySelectorAll('#' + question + ' .quiz-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function calculateDuration() {
+  if (!quizAnswers.q1 || !quizAnswers.q2 || !quizAnswers.q3 || !quizAnswers.q4) {
+    alert('Please answer all four questions.');
+    return;
+  }
+
+  let exposureMin = 0, exposureMax = 0;
+  let observationMin = 0, observationMax = 0;
+
+  // Q1: What are you measuring?
+  if (quizAnswers.q1 === 'action') {
+    exposureMin = 1; exposureMax = 2;
+    observationMin = 1; observationMax = 2;
+  } else {
+    exposureMin = 3; exposureMax = 5;
+    observationMin = 2; observationMax = 3;
+  }
+
+  // Q2: Engagement frequency
+  if (quizAnswers.q2 === 'daily') {
+    // No change needed — daily means less calendar time
+  } else if (quizAnswers.q2 === 'weekly') {
+    exposureMin += 1; exposureMax += 1;
+  } else {
+    exposureMin += 2; exposureMax += 2;
+  }
+
+  // Q3: Calendar factors
+  if (quizAnswers.q3 === 'minor') {
+    exposureMax += 1;
+  } else if (quizAnswers.q3 === 'major') {
+    exposureMin += 1; exposureMax += 2;
+  }
+
+  // Q4: Business appetite
+  if (quizAnswers.q4 === 'fast') {
+    exposureMin = Math.max(1, exposureMin - 1);
+    observationMin = Math.max(1, observationMin - 1);
+  } else if (quizAnswers.q4 === 'patient') {
+    exposureMax += 1;
+    observationMax += 1;
+  }
+
+  const totalMin = exposureMin + observationMin;
+  const totalMax = exposureMax + observationMax;
+
+  const isOneTime = quizAnswers.q1 === 'action';
+
+  let recHTML = '';
+  if (isOneTime) {
+    recHTML = `
+      <div class="recommendation go">
+        <span class="rec-icon">📅</span>
+        <span class="rec-text"><strong>Recommended: ${totalMin}–${totalMax} weeks total.</strong> Since you're measuring a one-time action, the exposure period can be short. Most of the duration is your measurement window to see if users followed through.</span>
+      </div>`;
+  } else {
+    recHTML = `
+      <div class="recommendation go">
+        <span class="rec-icon">📅</span>
+        <span class="rec-text"><strong>Recommended: ${totalMin}–${totalMax} weeks total.</strong> Give users ${exposureMin}–${exposureMax} weeks of promo exposure to build the habit, then ${observationMin}–${observationMax} weeks of observation to see if the behavior sticks without the promo doing the heavy lifting.</span>
+      </div>`;
+  }
+
+  // Build rationale
+  const q1Label = quizAnswers.q1 === 'action' ? 'One-time action' : 'Sustained behavior change';
+  const q2Label = quizAnswers.q2 === 'daily' ? 'Daily' : quizAnswers.q2 === 'weekly' ? 'Weekly' : 'Sporadic / Event-driven';
+  const q3Label = quizAnswers.q3 === 'clean' ? 'Clean window' : quizAnswers.q3 === 'minor' ? 'Minor events' : 'Major disruption';
+  const q4Label = quizAnswers.q4 === 'fast' ? 'Need results fast' : quizAnswers.q4 === 'balanced' ? 'Balanced' : 'Can be patient';
+
+  let breakdownHTML = `
+    <div class="detail-row"><span class="detail-label">Exposure Period</span><span class="detail-value">${exposureMin}–${exposureMax} weeks</span></div>
+    <div class="detail-row"><span class="detail-label">Observation Period</span><span class="detail-value">${observationMin}–${observationMax} weeks</span></div>
+    <div class="detail-row"><span class="detail-label">Total Duration</span><span class="detail-value"><strong>${totalMin}–${totalMax} weeks</strong></span></div>
+    <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
+      <div class="detail-row"><span class="detail-label">Measuring</span><span class="detail-value">${q1Label}</span></div>
+      <div class="detail-row"><span class="detail-label">Engagement Cadence</span><span class="detail-value">${q2Label}</span></div>
+      <div class="detail-row"><span class="detail-label">Calendar Factors</span><span class="detail-value">${q3Label}</span></div>
+      <div class="detail-row"><span class="detail-label">Business Appetite</span><span class="detail-value">${q4Label}</span></div>
+    </div>`;
+
+  document.getElementById('durationRec').innerHTML = recHTML;
+  document.getElementById('durationBreakdown').innerHTML = breakdownHTML;
+  document.getElementById('durationCard').style.display = '';
+  document.getElementById('durationCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+const kpiConfig = {
+  active_rate: {
+    type: 'rate',
+    baselineHelper: 'What % of your target users are currently active? <em>e.g., if 40% of users are active week-over-week, enter 40.</em>',
+    mdeHelper: 'If this promo didn\'t move active rate by at least ___, would you still consider it a win?',
+    baselinePlaceholder: '40',
+    mdePlaceholder: '2'
+  },
+  entry_fees: {
+    type: 'dollar',
+    baselineDollarHelper: 'What\'s the current average entry fees per user? <em>e.g., if users average $47 in entry fees, enter 47.</em>',
+    stddevHelper: 'How much do entry fees vary across users? <em>Ask your data team — they can pull this from BigQuery.</em>',
+    mdeDollarHelper: 'If this promo didn\'t lift entry fees per user by at least $__, would you still consider it a win?',
+    baselineDollarPlaceholder: '47',
+    stddevPlaceholder: '22',
+    mdeDollarPlaceholder: '3'
+  },
+  theo_ngr: {
+    type: 'dollar',
+    baselineDollarHelper: 'What\'s the current average theo NGR per user? <em>e.g., if users average $12 in theo NGR, enter 12.</em>',
+    stddevHelper: 'How much does theo NGR vary across users? <em>Ask your data team — they can pull this from BigQuery.</em>',
+    mdeDollarHelper: 'If this promo didn\'t lift theo NGR per user by at least $__, would you still consider it a win?',
+    baselineDollarPlaceholder: '12',
+    stddevPlaceholder: '18',
+    mdeDollarPlaceholder: '2'
+  },
+  other_rate: {
+    type: 'rate',
+    baselineHelper: 'What\'s the current rate of the metric you\'re trying to move? <em>e.g., if 40% of users convert today, enter 40.</em>',
+    mdeHelper: 'If this promo didn\'t move the metric by at least ___, would you still consider it a win?',
+    baselinePlaceholder: '40',
+    mdePlaceholder: '2'
+  },
+  other_dollar: {
+    type: 'dollar',
+    baselineDollarHelper: 'What\'s the current average per user for this metric?',
+    stddevHelper: 'How spread out is this metric across users? <em>Ask your data team for this number.</em>',
+    mdeDollarHelper: 'If this promo didn\'t lift the metric by at least $__, would you still consider it a win?',
+    baselineDollarPlaceholder: '12',
+    stddevPlaceholder: '18',
+    mdeDollarPlaceholder: '2'
+  }
+};
+
+function setKpi(kpi) {
+  if (!kpi) return;
+  const config = kpiConfig[kpi];
+  metricType = config.type;
+
+  document.querySelectorAll('.rate-field').forEach(el => el.style.display = config.type === 'rate' ? '' : 'none');
+  document.querySelectorAll('.dollar-field').forEach(el => el.style.display = config.type === 'dollar' ? '' : 'none');
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+
+  if (config.type === 'rate') {
+    document.getElementById('baselineHelper').innerHTML = config.baselineHelper;
+    document.getElementById('mdeHelper').innerHTML = config.mdeHelper;
+    document.getElementById('baseline').placeholder = config.baselinePlaceholder;
+    document.getElementById('mde').placeholder = config.mdePlaceholder;
+  } else {
+    document.getElementById('baselineDollarHelper').innerHTML = config.baselineDollarHelper;
+    document.getElementById('stddevHelper').innerHTML = config.stddevHelper;
+    document.getElementById('mdeDollarHelper').innerHTML = config.mdeDollarHelper;
+    document.getElementById('baselineDollar').placeholder = config.baselineDollarPlaceholder;
+    document.getElementById('stddev').placeholder = config.stddevPlaceholder;
+    document.getElementById('mdeDollar').placeholder = config.mdeDollarPlaceholder;
+  }
+
+  document.getElementById('results').classList.remove('visible');
+}
+
 function zScore(alpha) {
-  // Approximation of inverse normal CDF (Abramowitz & Stegun)
   const p = 1 - alpha / 2;
   const t = Math.sqrt(-2 * Math.log(1 - p));
   const c0 = 2.515517, c1 = 0.802853, c2 = 0.010328;
@@ -423,9 +841,16 @@ function requiredSamplePerGroup(baselineRate, mde, alpha, power) {
   const p1 = baselineRate;
   const p2 = baselineRate + mde;
   const zAlpha = zScore(alpha);
-  const zBeta = zScore((1 - power) * 2); // one-sided transform
+  const zBeta = zScore((1 - power) * 2);
   const pBar = (p1 + p2) / 2;
   const n = Math.pow(zAlpha * Math.sqrt(2 * pBar * (1 - pBar)) + zBeta * Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2)), 2) / Math.pow(p2 - p1, 2);
+  return Math.ceil(n);
+}
+
+function requiredSamplePerGroupContinuous(stddev, mde, alpha, power) {
+  const zAlpha = zScore(alpha);
+  const zBeta = zScore((1 - power) * 2);
+  const n = Math.pow(zAlpha + zBeta, 2) * 2 * Math.pow(stddev, 2) / Math.pow(mde, 2);
   return Math.ceil(n);
 }
 
@@ -438,17 +863,30 @@ function formatNum(n) {
 function calculate() {
   const audience = parseInt(document.getElementById('audience').value);
   const numGroups = parseInt(document.getElementById('variants').value);
-  const baselineRate = parseFloat(document.getElementById('baseline').value) / 100;
-  const mde = parseFloat(document.getElementById('mde').value) / 100;
   const alpha = parseFloat(document.getElementById('confidence').value);
   const power = parseFloat(document.getElementById('power').value);
 
-  if (!audience || !baselineRate || !mde) {
-    alert('Please fill in all fields.');
-    return;
-  }
+  if (!audience) { alert('Please fill in the audience size.'); return; }
+  if (!document.getElementById('primaryKpi').value) { alert('Please select a Primary KPI.'); return; }
 
-  const nPerGroup = requiredSamplePerGroup(baselineRate, mde, alpha, power);
+  let nPerGroup, mdeDisplay, baselineDisplay;
+
+  if (metricType === 'rate') {
+    const baselineRate = parseFloat(document.getElementById('baseline').value) / 100;
+    const mde = parseFloat(document.getElementById('mde').value) / 100;
+    if (!baselineRate || !mde) { alert('Please fill in baseline rate and min detectable effect.'); return; }
+    nPerGroup = requiredSamplePerGroup(baselineRate, mde, alpha, power);
+    mdeDisplay = (mde * 100).toFixed(1) + ' pp';
+    baselineDisplay = (baselineRate * 100).toFixed(1) + '%';
+  } else {
+    const baselineDollar = parseFloat(document.getElementById('baselineDollar').value);
+    const stddev = parseFloat(document.getElementById('stddev').value);
+    const mdeDollar = parseFloat(document.getElementById('mdeDollar').value);
+    if (!baselineDollar && baselineDollar !== 0 || !stddev || !mdeDollar) { alert('Please fill in the current average, standard deviation, and min detectable effect.'); return; }
+    nPerGroup = requiredSamplePerGroupContinuous(stddev, mdeDollar, alpha, power);
+    mdeDisplay = '$' + mdeDollar.toFixed(2);
+    baselineDisplay = '$' + baselineDollar.toFixed(2);
+  }
   const totalRequired = nPerGroup * numGroups;
   const headroom = audience / totalRequired;
 
@@ -458,7 +896,7 @@ function calculate() {
 
   if (headroom < 1) {
     recType = 'warning';
-    recMsg = `<strong>Insufficient audience.</strong> You need at least ${formatNum(totalRequired)} users but only have ${formatNum(audience)}. Consider increasing audience size, accepting a larger MDE, or lowering confidence level.`;
+    recMsg = `<strong>Insufficient audience.</strong> You need at least ${formatNum(totalRequired)} users but only have ${formatNum(audience)}. Consider increasing audience size, accepting a larger min detectable effect, or lowering confidence level.`;
     controlPct = Math.round(100 / numGroups);
     variantPct = controlPct;
     splitLabel = Array(numGroups).fill(controlPct).join('/');
@@ -474,7 +912,7 @@ function calculate() {
       controlPct = 16; variantPct = 28;
       splitLabel = '28/28/28/16';
     }
-    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x more users than needed. This gives the promo team maximum reach while maintaining enough statistical power to detect a ${(mde * 100).toFixed(1)}pp effect.`;
+    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x more users than needed. This gives the promo team maximum reach while maintaining enough statistical power to detect a ${mdeDisplay} effect.`;
   } else if (headroom >= 1.5) {
     recType = 'go';
     if (numGroups === 2) {
@@ -487,7 +925,7 @@ function calculate() {
       controlPct = 20; variantPct = 27;
       splitLabel = '27/27/26/20';
     }
-    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x headroom. A smaller control is possible while still detecting a ${(mde * 100).toFixed(1)}pp effect at your chosen confidence.`;
+    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x headroom. A smaller control is possible while still detecting a ${mdeDisplay} effect at your chosen confidence.`;
   } else {
     controlPct = Math.round(100 / numGroups);
     variantPct = controlPct;
@@ -495,7 +933,7 @@ function calculate() {
     else if (numGroups === 3) splitLabel = '33/33/33';
     else splitLabel = '25/25/25/25';
     recType = 'caution';
-    recMsg = `<strong>Recommended: ${splitLabel} equal split.</strong> Audience size is tight (${headroom.toFixed(1)}x headroom). An equal split maximizes your power to detect a ${(mde * 100).toFixed(1)}pp effect. Unequal splits would risk an underpowered test.`;
+    recMsg = `<strong>Recommended: ${splitLabel} equal split.</strong> Audience size is tight (${headroom.toFixed(1)}x headroom). An equal split maximizes your power to detect a ${mdeDisplay} effect. Unequal splits would risk an underpowered test.`;
   }
 
   // Render recommendation
@@ -547,22 +985,6 @@ function calculate() {
   document.getElementById('splitViz').innerHTML = `
     <div class="split-bar-container">${barHTML}</div>
     <div class="split-legend">${legendHTML}</div>`;
-
-  // Render stats
-  document.getElementById('reqPerGroup').textContent = formatNum(nPerGroup);
-  document.getElementById('reqTotal').textContent = formatNum(totalRequired);
-  document.getElementById('headroom').textContent = headroom < 1 ? 'Insufficient' : headroom.toFixed(1) + 'x';
-
-  // Detail rows
-  const confidencePct = ((1 - alpha) * 100).toFixed(0);
-  const powerPct = (power * 100).toFixed(0);
-  document.getElementById('detailRows').innerHTML = `
-    <div class="detail-row"><span class="detail-label">Baseline Rate</span><span class="detail-value">${(baselineRate * 100).toFixed(1)}%</span></div>
-    <div class="detail-row"><span class="detail-label">Minimum Detectable Effect</span><span class="detail-value">${(mde * 100).toFixed(1)} pp</span></div>
-    <div class="detail-row"><span class="detail-label">Confidence Level</span><span class="detail-value">${confidencePct}%</span></div>
-    <div class="detail-row"><span class="detail-label">Statistical Power</span><span class="detail-value">${powerPct}%</span></div>
-    <div class="detail-row"><span class="detail-label">Number of Groups</span><span class="detail-value">${numGroups}</span></div>
-    <div class="detail-row"><span class="detail-label">Total Audience</span><span class="detail-value">${formatNum(audience)}</span></div>`;
 
   document.getElementById('results').classList.add('visible');
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
