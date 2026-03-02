@@ -499,8 +499,9 @@
         <div class="helper" id="mdeHelper">If this promo didn't move the metric by at least ___, would you still consider it a win?</div>
         <select id="mde" class="mde-select">
           <option value="1">Small lift (1 pp)</option>
-          <option value="2" selected>Medium lift (2–3 pp) — Standard</option>
-          <option value="5">Large lift (5+ pp)</option>
+          <option value="2">Medium lift (2 pp) — Standard</option>
+          <option value="3">Moderate lift (3 pp)</option>
+          <option value="5">Large lift (5 pp)</option>
         </select>
       </div>
 
@@ -526,8 +527,9 @@
         <div class="helper" id="mdeDollarHelper">If this promo didn't lift the metric by at least $__, would you still consider it a win?</div>
         <select id="mdeDollar" class="mde-select">
           <option value="1">Small lift ($1 / user)</option>
-          <option value="3" selected>Medium lift ($3–5 / user) — Standard</option>
-          <option value="8">Large lift ($8+ / user)</option>
+          <option value="3">Medium lift ($3 / user) — Standard</option>
+          <option value="5">Moderate lift ($5 / user)</option>
+          <option value="8">Large lift ($8 / user)</option>
         </select>
       </div>
       <div class="form-group">
@@ -682,7 +684,6 @@ function calculateDuration() {
   let exposureMin = 0, exposureMax = 0;
   let observationMin = 0, observationMax = 0;
 
-  // Q1: What are you measuring?
   if (quizAnswers.q1 === 'action') {
     exposureMin = 1; exposureMax = 2;
     observationMin = 1; observationMax = 2;
@@ -691,23 +692,20 @@ function calculateDuration() {
     observationMin = 2; observationMax = 3;
   }
 
-  // Q2: Engagement frequency
   if (quizAnswers.q2 === 'daily') {
-    // No change needed — daily means less calendar time
+    // No change
   } else if (quizAnswers.q2 === 'weekly') {
     exposureMin += 1; exposureMax += 1;
   } else {
     exposureMin += 2; exposureMax += 2;
   }
 
-  // Q3: Calendar factors
   if (quizAnswers.q3 === 'minor') {
     exposureMax += 1;
   } else if (quizAnswers.q3 === 'major') {
     exposureMin += 1; exposureMax += 2;
   }
 
-  // Q4: Business appetite
   if (quizAnswers.q4 === 'fast') {
     exposureMin = Math.max(1, exposureMin - 1);
     observationMin = Math.max(1, observationMin - 1);
@@ -736,7 +734,6 @@ function calculateDuration() {
       </div>`;
   }
 
-  // Build rationale
   const q1Label = quizAnswers.q1 === 'action' ? 'One-time action' : 'Sustained behavior change';
   const q2Label = quizAnswers.q2 === 'daily' ? 'Daily' : quizAnswers.q2 === 'weekly' ? 'Weekly' : 'Sporadic / Event-driven';
   const q3Label = quizAnswers.q3 === 'clean' ? 'Clean window' : quizAnswers.q3 === 'minor' ? 'Minor events' : 'Major disruption';
@@ -854,6 +851,30 @@ function requiredSamplePerGroupContinuous(stddev, mde, alpha, power) {
   return Math.ceil(n);
 }
 
+/**
+ * Adjusts required sample size for unequal allocation.
+ * For a two-group comparison where control gets fraction kC and treatment gets fraction kT,
+ * the inflation factor vs equal split is: (1/kC + 1/kT) / 4
+ * For multi-group: we compute the worst-case pairwise comparison (each variant vs control).
+ *
+ * Returns the minimum total audience needed for the given split to be adequately powered.
+ */
+function requiredTotalForUnequalSplit(nPerGroupEqual, numGroups, controlFraction) {
+  // controlFraction is e.g. 0.20 for a 20% control
+  // Each variant's fraction of the total
+  const variantFraction = (1 - controlFraction) / (numGroups - 1);
+
+  // For each variant-vs-control comparison, the effective n per group in a
+  // two-sample test with unequal allocation is:
+  //   n_effective = N * kC * kT / (kC + kT)
+  // We need n_effective >= nPerGroupEqual (the equal-split requirement).
+  // So: N >= nPerGroupEqual * (kC + kT) / (kC * kT)
+  // Equivalently: N >= nPerGroupEqual * (1/kC + 1/kT)
+
+  const inflatedTotal = nPerGroupEqual * (1 / controlFraction + 1 / variantFraction);
+  return Math.ceil(inflatedTotal);
+}
+
 function formatNum(n) {
   if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
   if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
@@ -876,64 +897,95 @@ function calculate() {
     const mde = parseFloat(document.getElementById('mde').value) / 100;
     if (!baselineRate || !mde) { alert('Please fill in baseline rate and min detectable effect.'); return; }
     nPerGroup = requiredSamplePerGroup(baselineRate, mde, alpha, power);
-    mdeDisplay = (mde * 100).toFixed(1) + ' pp';
+    mdeDisplay = (mde * 100).toFixed(0) + ' pp';
     baselineDisplay = (baselineRate * 100).toFixed(1) + '%';
   } else {
     const baselineDollar = parseFloat(document.getElementById('baselineDollar').value);
     const stddev = parseFloat(document.getElementById('stddev').value);
     const mdeDollar = parseFloat(document.getElementById('mdeDollar').value);
-    if (!baselineDollar && baselineDollar !== 0 || !stddev || !mdeDollar) { alert('Please fill in the current average, standard deviation, and min detectable effect.'); return; }
+    if (isNaN(baselineDollar) || !stddev || !mdeDollar) { alert('Please fill in the current average, standard deviation, and min detectable effect.'); return; }
+    if (stddev <= 0) { alert('Standard deviation must be greater than zero.'); return; }
     nPerGroup = requiredSamplePerGroupContinuous(stddev, mdeDollar, alpha, power);
-    mdeDisplay = '$' + mdeDollar.toFixed(2);
+    mdeDisplay = '$' + mdeDollar.toFixed(0);
     baselineDisplay = '$' + baselineDollar.toFixed(2);
   }
-  const totalRequired = nPerGroup * numGroups;
-  const headroom = audience / totalRequired;
 
-  // Determine recommended split
-  let splitRec, splitLabel, recType, recMsg;
-  let controlPct, variantPct;
+  const totalRequiredEqual = nPerGroup * numGroups;
+  const headroomEqual = audience / totalRequiredEqual;
 
-  if (headroom < 1) {
-    recType = 'warning';
-    recMsg = `<strong>Insufficient audience.</strong> You need at least ${formatNum(totalRequired)} users but only have ${formatNum(audience)}. Consider increasing audience size, accepting a larger min detectable effect, or lowering confidence level.`;
-    controlPct = Math.round(100 / numGroups);
-    variantPct = controlPct;
-    splitLabel = Array(numGroups).fill(controlPct).join('/');
-  } else if (headroom >= 3) {
-    recType = 'go';
-    if (numGroups === 2) {
-      controlPct = 20; variantPct = 80;
-      splitLabel = '80/20';
-    } else if (numGroups === 3) {
-      controlPct = 20; variantPct = 40;
-      splitLabel = '40/40/20';
-    } else {
-      controlPct = 16; variantPct = 28;
-      splitLabel = '28/28/28/16';
-    }
-    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x more users than needed. This gives the promo team maximum reach while maintaining enough statistical power to detect a ${mdeDisplay} effect.`;
-  } else if (headroom >= 1.5) {
-    recType = 'go';
-    if (numGroups === 2) {
-      controlPct = 30; variantPct = 70;
-      splitLabel = '70/30';
-    } else if (numGroups === 3) {
-      controlPct = 25; variantPct = 37;
-      splitLabel = '38/37/25';
-    } else {
-      controlPct = 20; variantPct = 27;
-      splitLabel = '27/27/26/20';
-    }
-    recMsg = `<strong>Recommended: ${splitLabel} split.</strong> You have ${headroom.toFixed(1)}x headroom. A smaller control is possible while still detecting a ${mdeDisplay} effect at your chosen confidence.`;
+  // Define candidate splits to test, ordered from most aggressive to most conservative.
+  // Each candidate: { controlPct, label, tier }
+  // We'll pick the most aggressive split that the audience can actually support.
+  let candidates;
+  if (numGroups === 2) {
+    candidates = [
+      { controlFrac: 0.20, label: '80/20', tier: 'aggressive' },
+      { controlFrac: 0.30, label: '70/30', tier: 'moderate' },
+      { controlFrac: 0.50, label: '50/50', tier: 'equal' }
+    ];
+  } else if (numGroups === 3) {
+    candidates = [
+      { controlFrac: 0.20, label: '40/40/20', tier: 'aggressive' },
+      { controlFrac: 0.25, label: '38/37/25', tier: 'moderate' },
+      { controlFrac: 1/3,  label: '33/33/33', tier: 'equal' }
+    ];
   } else {
+    candidates = [
+      { controlFrac: 0.16, label: '28/28/28/16', tier: 'aggressive' },
+      { controlFrac: 0.20, label: '27/27/26/20', tier: 'moderate' },
+      { controlFrac: 0.25, label: '25/25/25/25', tier: 'equal' }
+    ];
+  }
+
+  // For each candidate, compute the minimum total audience needed
+  let chosenSplit = null;
+  let chosenMinTotal = null;
+
+  for (const cand of candidates) {
+    const minTotal = requiredTotalForUnequalSplit(nPerGroup, numGroups, cand.controlFrac);
+    if (audience >= minTotal) {
+      chosenSplit = cand;
+      chosenMinTotal = minTotal;
+      break; // Pick the first (most aggressive) split that works
+    }
+  }
+
+  // Fallback: check if even equal split works
+  if (!chosenSplit) {
+    const equalCand = candidates[candidates.length - 1];
+    const minTotal = requiredTotalForUnequalSplit(nPerGroup, numGroups, equalCand.controlFrac);
+    chosenSplit = equalCand;
+    chosenMinTotal = minTotal;
+  }
+
+  let recType, recMsg;
+  let controlPct, variantPct;
+  const headroomActual = audience / chosenMinTotal;
+
+  if (audience < chosenMinTotal) {
+    // Not enough even for equal split
+    recType = 'warning';
     controlPct = Math.round(100 / numGroups);
     variantPct = controlPct;
-    if (numGroups === 2) splitLabel = '50/50';
-    else if (numGroups === 3) splitLabel = '33/33/33';
-    else splitLabel = '25/25/25/25';
+    const splitLabel = numGroups === 2 ? '50/50' : numGroups === 3 ? '33/33/33' : '25/25/25/25';
+    recMsg = `<strong>Insufficient audience.</strong> You need at least ${formatNum(chosenMinTotal)} users but only have ${formatNum(audience)}. Consider increasing audience size, accepting a larger min detectable effect, or lowering confidence level.`;
+  } else if (chosenSplit.tier === 'equal') {
+    // Only equal split is feasible
     recType = 'caution';
-    recMsg = `<strong>Recommended: ${splitLabel} equal split.</strong> Audience size is tight (${headroom.toFixed(1)}x headroom). An equal split maximizes your power to detect a ${mdeDisplay} effect. Unequal splits would risk an underpowered test.`;
+    controlPct = Math.round(100 / numGroups);
+    variantPct = controlPct;
+    recMsg = `<strong>Recommended: ${chosenSplit.label} equal split.</strong> Audience size is tight (${headroomActual.toFixed(1)}x headroom). An equal split maximizes your power to detect a ${mdeDisplay} effect. Unequal splits would risk an underpowered test.`;
+  } else if (chosenSplit.tier === 'moderate') {
+    recType = 'go';
+    controlPct = Math.round(chosenSplit.controlFrac * 100);
+    variantPct = 100 - controlPct;
+    recMsg = `<strong>Recommended: ${chosenSplit.label} split.</strong> You have ${headroomActual.toFixed(1)}x headroom (adjusted for unequal allocation). A smaller control is possible while still detecting a ${mdeDisplay} effect at your chosen confidence.`;
+  } else {
+    // aggressive
+    recType = 'go';
+    controlPct = Math.round(chosenSplit.controlFrac * 100);
+    variantPct = 100 - controlPct;
+    recMsg = `<strong>Recommended: ${chosenSplit.label} split.</strong> You have ${headroomActual.toFixed(1)}x headroom (adjusted for unequal allocation). This gives the promo team maximum reach while maintaining enough statistical power to detect a ${mdeDisplay} effect.`;
   }
 
   // Render recommendation
@@ -949,15 +1001,14 @@ function calculate() {
   const groupLabels = ['Variant A', 'Variant B', 'Variant C'];
   let splits = [];
 
-  if (recType === 'warning' || recType === 'caution') {
-    // Equal split
+  if (recType === 'warning' || chosenSplit.tier === 'equal') {
     const eqPct = Math.floor(100 / numGroups);
     const remainder = 100 - eqPct * numGroups;
     for (let i = 0; i < numGroups - 1; i++) splits.push({ pct: eqPct + (i < remainder ? 1 : 0), type: groupColors[i], label: groupLabels[i] });
     splits.push({ pct: eqPct, type: 'control', label: 'Control' });
   } else if (numGroups === 2) {
     splits = [
-      { pct: variantPct, type: 'variant-a', label: 'Variant' },
+      { pct: 100 - controlPct, type: 'variant-a', label: 'Variant' },
       { pct: controlPct, type: 'control', label: 'Control' }
     ];
   } else if (numGroups === 3) {
