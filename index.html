@@ -7,379 +7,85 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #F5F5F7;
-    --surface: #FFFFFF;
-    --surface-hover: #EDEDF0;
-    --border: #DDDDE2;
-    --border-focus: #6C72FF;
-    --text: #1C1C1E;
-    --text-muted: #6B6B78;
-    --text-dim: #9494A3;
-    --accent: #6C72FF;
-    --accent-soft: rgba(108, 114, 255, 0.10);
-    --green: #22A06B;
-    --green-soft: rgba(34, 160, 107, 0.10);
-    --amber: #CF8600;
-    --amber-soft: rgba(207, 134, 0, 0.10);
-    --red: #DE350B;
-    --red-soft: rgba(222, 53, 11, 0.08);
+    --bg: #F5F5F7; --surface: #FFFFFF; --border: #DDDDE2; --border-focus: #6C72FF;
+    --text: #1C1C1E; --text-muted: #6B6B78; --text-dim: #9494A3;
+    --accent: #6C72FF; --accent-soft: rgba(108,114,255,0.10);
+    --green: #22A06B; --green-soft: rgba(34,160,107,0.10);
+    --amber: #CF8600; --amber-soft: rgba(207,134,0,0.10);
+    --red: #DE350B; --red-soft: rgba(222,53,11,0.08);
     --radius: 10px;
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 32px 24px;
-    line-height: 1.5;
-  }
-
-  .container { max-width: 720px; margin: 0 auto; }
-
-  .header { margin-bottom: 32px; }
-  .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 6px; }
-  .header p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-    margin-bottom: 16px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-  }
-
-  .card-highlight { background: #FFFDE7; border-color: #F5E6A3; }
-
-  .card-title {
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-  }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group.full-width { grid-column: 1 / -1; }
-
-  label { font-size: 14px; font-weight: 700; color: var(--text); }
-
-  .input-wrapper { position: relative; }
-
-  input[type="number"], select {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    color: var(--text);
-    transition: border-color 0.2s;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-
-  input:focus, select:focus {
-    outline: none;
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px var(--accent-soft);
-  }
-
-  input.solve-target {
-    background: var(--accent-soft);
-    border-color: var(--accent);
-    cursor: default;
-  }
-
-  input.solve-target::placeholder {
-    color: var(--accent);
-    font-style: italic;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-  }
-
-  select {
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%236B6B78' stroke-width='1.5'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 32px;
-  }
-
-  .suffix {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 12px;
-    color: var(--text-dim);
-    font-family: 'DM Sans', sans-serif;
-    pointer-events: none;
-  }
-
-  .helper {
-    font-size: 12px;
-    color: var(--text-dim);
-    line-height: 1.5;
-    margin-top: 2px;
-  }
-
-  .helper em { color: var(--text-muted); font-style: normal; }
-
-  .btn {
-    width: 100%;
-    padding: 12px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 8px;
-  }
-
-  .btn:hover { background: #5A60E6; transform: translateY(-1px); }
-  .btn:active { transform: translateY(0); }
-
-  /* Learnings filter buttons */
-  .learnings-group {
-    display: flex;
-    gap: 8px;
-  }
-
-  .learnings-btn {
-    flex: 1;
-    padding: 10px 12px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text-muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    line-height: 1.4;
-  }
-
-  .learnings-btn:hover {
-    border-color: var(--accent);
-    color: var(--text);
-    background: var(--accent-soft);
-  }
-
-  .learnings-btn.active {
-    border-color: var(--accent);
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .learnings-label {
-    display: block;
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 3px;
-    font-weight: 400;
-  }
-
-  .learnings-btn.active .learnings-label { color: var(--accent); }
-
-  /* Solve hint */
-  .solve-hint {
-    background: var(--accent-soft);
-    border: 1px solid rgba(108, 114, 255, 0.2);
-    border-radius: 8px;
-    padding: 12px 16px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 16px;
-    animation: fadeIn 0.3s ease;
-  }
-
-  .solve-hint .hint-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-  .solve-hint .hint-text { font-size: 13px; color: var(--text); line-height: 1.5; }
-  .solve-hint .hint-text strong { color: var(--accent); }
-
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* Results */
-  .results { display: none; }
-  .results.visible { display: block; animation: fadeIn 0.4s ease; }
-
-  .result-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .result-item {
-    background: var(--bg);
-    border-radius: 8px;
-    padding: 14px;
-    text-align: center;
-  }
-
-  .result-item.solved {
-    background: var(--accent-soft);
-    border: 1px solid rgba(108, 114, 255, 0.25);
-  }
-
-  .result-item .value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 2px;
-  }
-
-  .result-item.solved .value { color: var(--accent); }
-
-  .result-item .label {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .recommendation {
-    border-radius: 8px;
-    padding: 16px 18px;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .recommendation.go { background: var(--green-soft); border: 1px solid rgba(34, 160, 107, 0.25); }
-  .recommendation.caution { background: var(--amber-soft); border: 1px solid rgba(207, 134, 0, 0.25); }
-  .recommendation.warning { background: var(--red-soft); border: 1px solid rgba(222, 53, 11, 0.2); }
-
-  .rec-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-  .rec-text { font-size: 14px; line-height: 1.55; }
-  .rec-text strong { font-weight: 600; }
-
-  .split-viz { margin-top: 12px; }
-
-  .split-bar-container {
-    display: flex;
-    border-radius: 6px;
-    overflow: hidden;
-    height: 36px;
-    margin-bottom: 10px;
-  }
-
-  .split-segment {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight: 600;
-    color: #fff;
-    transition: width 0.4s ease;
-  }
-
-  .split-segment.control { background: #DDDDE2; color: #1C1C1E; }
-  .split-segment.variant-a { background: #6C72FF; color: #FFFFFF; }
-  .split-segment.variant-b { background: #9B6CFF; color: #FFFFFF; }
-  .split-segment.variant-c { background: #B8A0FF; color: #1C1C1E; }
-
-  .split-legend { display: flex; gap: 16px; flex-wrap: wrap; }
-
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text); }
-
-  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-  .legend-dot.control { background: #DDDDE2; border: 1px solid #C0C0C6; }
-  .legend-dot.variant-a { background: #6C72FF; }
-  .legend-dot.variant-b { background: #9B6CFF; }
-  .legend-dot.variant-c { background: #B8A0FF; }
-
-  .detail-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-
-  .detail-row:last-child { border-bottom: none; }
-  .detail-row .detail-label { color: var(--text-muted); }
-  .detail-row .detail-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
-
-  .footnote { font-size: 12px; color: var(--text-dim); margin-top: 16px; line-height: 1.6; }
-
-  /* Duration section */
-  .section-divider {
-    display: flex;
-    align-items: center;
-    margin: 32px 0;
-    gap: 16px;
-  }
-
-  .section-divider::before,
-  .section-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .section-divider span {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-dim);
-  }
-
-  .quiz-options { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-
-  .quiz-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    padding: 14px 16px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: left;
-    width: 100%;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  .quiz-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
-  .quiz-btn.selected { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 2px var(--accent-soft); }
-
-  .quiz-label-text { font-size: 14px; font-weight: 600; color: var(--text); }
-  .quiz-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-  .quiz-btn.selected .quiz-label-text { color: var(--accent); }
-
-  @media (max-width: 600px) {
-    .form-grid { grid-template-columns: 1fr; }
-    .result-grid { grid-template-columns: 1fr; }
-    .learnings-group { flex-direction: column; }
-  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:32px 24px; line-height:1.5; }
+  .container { max-width:720px; margin:0 auto; }
+  .header { margin-bottom:32px; }
+  .header h1 { font-size:26px; font-weight:800; letter-spacing:-0.3px; margin-bottom:6px; }
+  .header p { font-size:14px; color:var(--text-muted); line-height:1.6; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+  .card-highlight { background:#FFFDE7; border-color:#F5E6A3; }
+  .card-title { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-muted); margin-bottom:20px; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .form-group { display:flex; flex-direction:column; gap:6px; }
+  .form-group.full-width { grid-column:1/-1; }
+  label { font-size:14px; font-weight:700; color:var(--text); }
+  .input-wrapper { position:relative; }
+  input[type="number"], select { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--text); transition:border-color 0.2s; appearance:none; -webkit-appearance:none; }
+  input:focus, select:focus { outline:none; border-color:var(--border-focus); box-shadow:0 0 0 3px var(--accent-soft); }
+  input.solve-target { background:var(--accent-soft); border-color:var(--accent); }
+  input.solve-target::placeholder { color:var(--accent); font-style:italic; font-family:'DM Sans',sans-serif; font-size:13px; }
+  select { cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%236B6B78' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:32px; }
+  .suffix { position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:12px; color:var(--text-dim); font-family:'DM Sans',sans-serif; pointer-events:none; }
+  .helper { font-size:12px; color:var(--text-dim); line-height:1.5; margin-top:2px; }
+  .helper em { color:var(--text-muted); font-style:normal; }
+  .btn { width:100%; padding:12px; background:var(--accent); color:#fff; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; margin-top:8px; }
+  .btn:hover { background:#5A60E6; transform:translateY(-1px); }
+  .btn:active { transform:translateY(0); }
+  .learnings-group { display:flex; gap:8px; }
+  .learnings-btn { flex:1; padding:10px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text-muted); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; cursor:pointer; transition:all 0.2s; text-align:center; line-height:1.4; }
+  .learnings-btn:hover { border-color:var(--accent); color:var(--text); background:var(--accent-soft); }
+  .learnings-btn.active { border-color:var(--accent); background:var(--accent-soft); color:var(--accent); font-weight:600; }
+  .learnings-label { display:block; font-size:11px; color:var(--text-dim); margin-top:3px; font-weight:400; }
+  .learnings-btn.active .learnings-label { color:var(--accent); }
+  .solve-hint { background:var(--accent-soft); border:1px solid rgba(108,114,255,0.2); border-radius:8px; padding:12px 16px; display:flex; align-items:flex-start; gap:10px; margin-bottom:16px; animation:fadeIn 0.3s ease; }
+  .solve-hint .hint-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+  .solve-hint .hint-text { font-size:13px; color:var(--text); line-height:1.5; }
+  .solve-hint .hint-text strong { color:var(--accent); }
+  .mde-preview { font-size:12px; color:var(--accent); font-weight:500; line-height:1.5; margin-top:2px; padding:6px 10px; background:var(--accent-soft); border-radius:6px; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+  .results { display:none; }
+  .results.visible { display:block; animation:fadeIn 0.4s ease; }
+  .result-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:20px; }
+  .result-item { background:var(--bg); border-radius:8px; padding:14px; text-align:center; }
+  .result-item.solved { background:var(--accent-soft); border:1px solid rgba(108,114,255,0.25); }
+  .result-item .value { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; margin-bottom:2px; }
+  .result-item.solved .value { color:var(--accent); }
+  .result-item .label { font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; }
+  .recommendation { border-radius:8px; padding:16px 18px; display:flex; align-items:flex-start; gap:12px; margin-bottom:16px; }
+  .recommendation.go { background:var(--green-soft); border:1px solid rgba(34,160,107,0.25); }
+  .recommendation.caution { background:var(--amber-soft); border:1px solid rgba(207,134,0,0.25); }
+  .recommendation.warning { background:var(--red-soft); border:1px solid rgba(222,53,11,0.2); }
+  .rec-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+  .rec-text { font-size:14px; line-height:1.55; }
+  .rec-text strong { font-weight:600; }
+  .split-viz { margin-top:12px; }
+  .split-bar-container { display:flex; border-radius:6px; overflow:hidden; height:36px; margin-bottom:10px; }
+  .split-segment { display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:#fff; transition:width 0.4s ease; }
+  .split-segment.control { background:#DDDDE2; color:#1C1C1E; }
+  .split-segment.variant-a { background:#6C72FF; }
+  .split-segment.variant-b { background:#9B6CFF; }
+  .split-segment.variant-c { background:#B8A0FF; color:#1C1C1E; }
+  .split-legend { display:flex; gap:16px; flex-wrap:wrap; }
+  .legend-item { display:flex; align-items:center; gap:6px; font-size:12px; }
+  .legend-dot { width:8px; height:8px; border-radius:50%; }
+  .legend-dot.control { background:#DDDDE2; border:1px solid #C0C0C6; }
+  .legend-dot.variant-a { background:#6C72FF; }
+  .legend-dot.variant-b { background:#9B6CFF; }
+  .legend-dot.variant-c { background:#B8A0FF; }
+  .detail-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+  .detail-row:last-child { border-bottom:none; }
+  .detail-row .detail-label { color:var(--text-muted); }
+  .detail-row .detail-value { font-family:'JetBrains Mono',monospace; font-size:13px; }
+  @media(max-width:600px) { .form-grid{grid-template-columns:1fr} .result-grid{grid-template-columns:1fr} .learnings-group{flex-direction:column} }
 </style>
 </head>
 <body>
@@ -389,125 +95,80 @@
     <p>Enter your KPI and parameters, then leave one field blank to solve for it. Fill everything to get a recommended group split.</p>
   </div>
 
-  <!-- SECTION 1: Always Required -->
   <div class="card">
     <div class="card-title">Section 1 — KPI &amp; Baseline</div>
     <div class="form-grid">
       <div class="form-group full-width">
         <label>Primary KPI Type</label>
-        <div class="helper">Is your primary metric a rate/proportion or a continuous dollar amount?</div>
+        <div class="helper">Is your primary metric a rate/proportion or a continuous amount?</div>
         <select id="kpiType" onchange="handleKpiTypeChange(this.value)">
           <option value="" disabled selected>Select KPI type...</option>
           <option value="binary">Binary (e.g., Active Rate, Conversion Rate)</option>
-          <option value="nonbinary">Non-Binary (e.g., Entry Fees, Theo NGR)</option>
+          <option value="continuous">Continuous (e.g., Entry Fees, Theo NGR, Revenue)</option>
         </select>
       </div>
-
-      <!-- Binary fields -->
       <div class="form-group full-width binary-field" style="display:none;">
         <label for="proportion">Baseline Proportion</label>
         <div class="helper">What's the current rate? <em>e.g., if 40% of users are active, enter 40.</em></div>
-        <div class="input-wrapper">
-          <input type="number" id="proportion" placeholder="40" step="0.1">
-          <span class="suffix">%</span>
-        </div>
+        <div class="input-wrapper"><input type="number" id="proportion" placeholder="40" step="0.1" oninput="updateMdePreview()"><span class="suffix">%</span></div>
       </div>
-
-      <!-- Non-binary fields -->
-      <div class="form-group nonbinary-field" style="display:none;">
+      <div class="form-group continuous-field" style="display:none;">
         <label for="currentAvg">Current Average (Mean)</label>
-        <div class="helper">What's the current average per user? <em>e.g., $47 in entry fees.</em></div>
-        <div class="input-wrapper">
-          <input type="number" id="currentAvg" placeholder="47" step="0.01">
-          <span class="suffix">$</span>
-        </div>
+        <div class="helper">Average per user. <em>e.g., $47 in entry fees.</em></div>
+        <div class="input-wrapper"><input type="number" id="currentAvg" placeholder="47" step="0.01" oninput="updateMdePreview()"><span class="suffix">$</span></div>
       </div>
-      <div class="form-group nonbinary-field" style="display:none;">
+      <div class="form-group continuous-field" style="display:none;">
         <label for="currentSD">Standard Deviation</label>
-        <div class="helper">How much does this metric vary across users? <em>Ask your data team.</em></div>
-        <div class="input-wrapper">
-          <input type="number" id="currentSD" placeholder="22" step="0.01">
-          <span class="suffix">$</span>
-        </div>
+        <div class="helper">How much does this metric vary? <em>Ask your data team.</em></div>
+        <div class="input-wrapper"><input type="number" id="currentSD" placeholder="22" step="0.01"><span class="suffix">$</span></div>
       </div>
-
-      <!-- Learnings filter -->
       <div class="form-group full-width">
         <label>Learnings Filter</label>
         <div class="helper">How should we optimize the group split?</div>
         <div class="learnings-group">
-          <button class="learnings-btn" onclick="setLearnings('minimize')" id="lf-minimize">
-            Minimize Control
-            <span class="learnings-label">Smallest control, max promo reach</span>
-          </button>
-          <button class="learnings-btn active" onclick="setLearnings('balanced')" id="lf-balanced">
-            Balanced
-            <span class="learnings-label">Moderate split, good power</span>
-          </button>
-          <button class="learnings-btn" onclick="setLearnings('maximize')" id="lf-maximize">
-            Maximize Learnings
-            <span class="learnings-label">Equal split, max statistical power</span>
-          </button>
+          <button class="learnings-btn" onclick="setLearnings('minimize')" id="lf-minimize">Minimize Control<span class="learnings-label">Smallest control group, max promo reach</span></button>
+          <button class="learnings-btn active" onclick="setLearnings('maximize')" id="lf-maximize">Maximize Learnings<span class="learnings-label">Equal split, maximum statistical power</span></button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SECTION 2: Solver Parameters -->
   <div class="card">
     <div class="card-title">Section 2 — Test Parameters</div>
-    <div class="helper" style="margin-bottom: 16px;">Leave <strong>one field blank</strong> to solve for it. Fill all fields to get a recommended group split.</div>
-    <div id="solveHint" class="solve-hint" style="display:none;">
-      <span class="hint-icon">🔍</span>
-      <span class="hint-text" id="solveHintText"></span>
-    </div>
+    <div class="helper" style="margin-bottom:16px;">Leave <strong>one field blank</strong> to solve for it. Fill all fields to get a recommended group split.</div>
+    <div id="solveHint" class="solve-hint" style="display:none;"><span class="hint-icon">🔍</span><span class="hint-text" id="solveHintText"></span></div>
     <div class="form-grid">
       <div class="form-group">
         <label for="audienceSize">Audience Size</label>
-        <div class="input-wrapper">
-          <input type="number" id="audienceSize" placeholder="200000" oninput="updateSolveHint()">
-          <span class="suffix">users</span>
-        </div>
+        <div class="input-wrapper"><input type="number" id="audienceSize" placeholder="200000" oninput="updateSolveHint()"><span class="suffix">users</span></div>
       </div>
       <div class="form-group">
         <label for="numGroups">Number of Groups</label>
-        <div class="input-wrapper">
-          <input type="number" id="numGroups" placeholder="2" min="2" max="4" oninput="updateSolveHint()">
-        </div>
+        <div class="input-wrapper"><input type="number" id="numGroups" placeholder="2" min="2" max="4" oninput="updateSolveHint()"></div>
         <div class="helper">2–4 (Control + Variants)</div>
       </div>
       <div class="form-group">
-        <label for="mdeInput">Min Detectable Effect</label>
-        <div class="input-wrapper">
-          <input type="number" id="mdeInput" placeholder="" step="0.1" oninput="updateSolveHint(); updateMdePreview();">
-          <span class="suffix" id="mdeSuffix">pp / $</span>
-        </div>
-        <div class="helper" id="mdeHelperText">Enter in pp (binary) or $ (non-binary)</div>
-        <div class="helper" id="mdePreview" style="display:none; color: var(--accent); font-weight: 500;"></div>
+        <label for="mdeInput">Min Detectable Lift</label>
+        <div class="input-wrapper"><input type="number" id="mdeInput" placeholder="5" step="0.1" oninput="updateSolveHint();updateMdePreview();"><span class="suffix">% lift</span></div>
+        <div class="helper" id="mdeHelperText">Relative lift — e.g., 5 means a 5% change from baseline</div>
+        <div class="mde-preview" id="mdePreview" style="display:none;"></div>
       </div>
       <div class="form-group">
         <label for="powerInput">Statistical Power</label>
-        <div class="input-wrapper">
-          <input type="number" id="powerInput" placeholder="80" step="1" min="50" max="99" oninput="updateSolveHint()">
-          <span class="suffix">%</span>
-        </div>
+        <div class="input-wrapper"><input type="number" id="powerInput" placeholder="80" step="1" min="50" max="99" oninput="updateSolveHint()"><span class="suffix">%</span></div>
         <div class="helper">Standard: 80%. Conservative: 90%</div>
       </div>
       <div class="form-group">
         <label for="confidenceInput">Confidence Level</label>
-        <div class="input-wrapper">
-          <input type="number" id="confidenceInput" placeholder="95" step="1" min="70" max="99" oninput="updateSolveHint()">
-          <span class="suffix">%</span>
-        </div>
+        <div class="input-wrapper"><input type="number" id="confidenceInput" placeholder="95" step="1" min="70" max="99" oninput="updateSolveHint()"><span class="suffix">%</span></div>
         <div class="helper">Standard: 95%. Directional: 90%</div>
       </div>
-      <div class="form-group" style="display:flex; align-items:flex-end;">
+      <div class="form-group" style="display:flex;align-items:flex-end;">
         <button class="btn" onclick="solve()" style="margin-top:0;">Calculate</button>
       </div>
     </div>
   </div>
 
-  <!-- Results -->
   <div class="results" id="results">
     <div class="card card-highlight">
       <div class="card-title" id="resultTitle">Result</div>
@@ -516,850 +177,180 @@
       <div id="resultDetails"></div>
     </div>
   </div>
-
-  <!-- Duration Guide -->
-  <div class="section-divider"><span>Duration Guide</span></div>
-
-  <div class="header">
-    <h1>Test Duration Guide</h1>
-    <p>Answer a few questions about your test and we'll recommend how long to run it.</p>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Question 1 of 4</div>
-    <label>What are you trying to measure?</label>
-    <div class="helper">This is the biggest factor in how long your test needs to run.</div>
-    <div class="quiz-options" id="q1">
-      <button class="quiz-btn" onclick="selectQuiz('q1', 'action', this)">
-        <span class="quiz-label-text">One-time action</span>
-        <span class="quiz-desc">Did the user do the thing? (e.g., created an entry, made a deposit)</span>
-      </button>
-      <button class="quiz-btn" onclick="selectQuiz('q1', 'behavior', this)">
-        <span class="quiz-label-text">Sustained behavior change</span>
-        <span class="quiz-desc">Did the user change a habit? (e.g., regularly plays NBA, increased weekly entries)</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Question 2 of 4</div>
-    <label>How often are users receiving the promo or intervention?</label>
-    <div class="helper">More frequent touches means less calendar time needed.</div>
-    <div class="quiz-options" id="q2">
-      <button class="quiz-btn" onclick="selectQuiz('q2', 'daily', this)">
-        <span class="quiz-label-text">Daily or near-daily</span>
-        <span class="quiz-desc">Users are getting a promo or push every day or every other day</span>
-      </button>
-      <button class="quiz-btn" onclick="selectQuiz('q2', 'weekly', this)">
-        <span class="quiz-label-text">Weekly</span>
-        <span class="quiz-desc">Users get a promo ~once per week</span>
-      </button>
-      <button class="quiz-btn" onclick="selectQuiz('q2', 'sporadic', this)">
-        <span class="quiz-label-text">Sporadic / event-driven</span>
-        <span class="quiz-desc">Promos go out based on the schedule or specific triggers</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Question 3 of 4</div>
-    <label>Are there calendar factors to work around?</label>
-    <div class="helper">Major events, holidays, or dead periods can distort results.</div>
-    <div class="quiz-options" id="q3">
-      <button class="quiz-btn" onclick="selectQuiz('q3', 'clean', this)">
-        <span class="quiz-label-text">Clean window</span>
-        <span class="quiz-desc">No major events, holidays, or anomalies during the test period</span>
-      </button>
-      <button class="quiz-btn" onclick="selectQuiz('q3', 'minor', this)">
-        <span class="quiz-label-text">Minor events</span>
-        <span class="quiz-desc">Some events but nothing major (e.g., a holiday weekend)</span>
-      </button>
-      <button class="quiz-btn" onclick="selectQuiz('q3', 'major', this)">
-        <span class="quiz-label-text">Major disruption</span>
-        <span class="quiz-desc">All-Star break, playoffs, off-season, major holiday</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Question 4 of 4</div>
-    <label>What's the business appetite for waiting?</label>
-    <div class="helper">Longer tests give cleaner results, but sometimes the business needs to move.</div>
-    <div class="quiz-options" id="q4">
-      <button class="quiz-btn" onclick="selectQuiz('q4', 'fast', this)">
-        <span class="quiz-label-text">Need results fast</span>
-        <span class="quiz-desc">Leadership wants a read ASAP — willing to accept more uncertainty</span>
-      </button>
-      <button class="quiz-btn" onclick="selectQuiz('q4', 'balanced', this)">
-        <span class="quiz-label-text">Balanced</span>
-        <span class="quiz-desc">Want solid results but don't need to wait forever</span>
-      </button>
-      <button class="quiz-btn" onclick="selectQuiz('q4', 'patient', this)">
-        <span class="quiz-label-text">Can be patient</span>
-        <span class="quiz-desc">Run it right — we'd rather have a clean read than a fast one</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="form-group full-width" style="padding: 0 0 16px 0;">
-    <button class="btn" onclick="calculateDuration()">Get Duration Recommendation</button>
-  </div>
-
-  <div id="durationResults">
-    <div class="card card-highlight" id="durationCard" style="display:none;">
-      <div class="card-title">Recommended Duration</div>
-      <div id="durationRec"></div>
-      <div id="durationBreakdown"></div>
-      <div class="footnote" style="margin-top: 12px;">This is a recommended starting point, not an exact answer. Final duration should factor in your specific promo cadence, the sports calendar, and how long you'd expect the behavior to take root.</div>
-    </div>
-  </div>
 </div>
 
 <script>
-// ──────────────────────────────────────────
-// STATE
-// ──────────────────────────────────────────
-let kpiType = ''; // 'binary' or 'nonbinary'
-let learningsFilter = 'balanced'; // 'minimize', 'balanced', 'maximize'
+let kpiType='', learningsFilter='maximize';
 
-// ──────────────────────────────────────────
-// STATISTICAL HELPERS
-// ──────────────────────────────────────────
-function zScore(alpha) {
-  const p = 1 - alpha / 2;
-  const t = Math.sqrt(-2 * Math.log(1 - p));
-  const c0 = 2.515517, c1 = 0.802853, c2 = 0.010328;
-  const d1 = 1.432788, d2 = 0.189269, d3 = 0.001308;
-  return t - (c0 + c1 * t + c2 * t * t) / (1 + d1 * t + d2 * t * t + d3 * t * t * t);
+function zScore(a){const p=1-a/2,t=Math.sqrt(-2*Math.log(1-p));return t-(2.515517+.802853*t+.010328*t*t)/(1+1.432788*t+.189269*t*t+.001308*t*t*t)}
+function alphaFromZ(z){const t=1/(1+.2316419*Math.abs(z)),phi=(1/Math.sqrt(2*Math.PI))*Math.exp(-z*z/2);return 2*phi*(.31938153*t-.35656378*t*t+1.78147794*t*t*t-1.82125598*t*t*t*t+1.33027443*t*t*t*t*t)}
+function normalCDF(x){const t=1/(1+.2316419*Math.abs(x)),phi=(1/Math.sqrt(2*Math.PI))*Math.exp(-x*x/2),c=1-phi*(.31938153*t-.35656378*t*t+1.78147794*t*t*t-1.82125598*t*t*t*t+1.33027443*t*t*t*t*t);return x>=0?c:1-c}
+
+function nPGBin(p,d,a,pw){const p2=p+d,za=zScore(a),zb=zScore((1-pw)*2),pb=(p+p2)/2;return Math.ceil(Math.pow(za*Math.sqrt(2*pb*(1-pb))+zb*Math.sqrt(p*(1-p)+p2*(1-p2)),2)/(d*d))}
+function nPGCont(s,d,a,pw){const za=zScore(a),zb=zScore((1-pw)*2);return Math.ceil(Math.pow(za+zb,2)*2*s*s/(d*d))}
+function reqTotal(npg,ng,cf){const vf=(1-cf)/(ng-1);return Math.ceil(npg*(1/cf+1/vf)/2)}
+function getCF(ng,f){return f==='maximize'?1/ng:ng===2?.2:ng===3?.2:.16}
+function getCands(ng,f){let c;if(ng===2)c=[{cf:.2,l:'80/20'},{cf:.5,l:'50/50'}];else if(ng===3)c=[{cf:.2,l:'40/40/20'},{cf:1/3,l:'33/33/33'}];else c=[{cf:.16,l:'28/28/28/16'},{cf:.25,l:'25/25/25/25'}];return f==='maximize'?c.reverse():c}
+function fmtN(n){return n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+'M':n>=1e3?(n/1e3).toFixed(1).replace(/\.0$/,'')+'K':n.toLocaleString()}
+
+function liftToAbs(lp){
+  if(kpiType==='binary'){const b=parseFloat(document.getElementById('proportion').value)/100;return b>0&&!isNaN(b)?b*(lp/100):null}
+  else{const a=parseFloat(document.getElementById('currentAvg').value);return a>0&&!isNaN(a)?a*(lp/100):null}
+}
+function absToLift(av){
+  if(kpiType==='binary'){const b=parseFloat(document.getElementById('proportion').value)/100;return b>0?(av/b)*100:null}
+  else{const a=parseFloat(document.getElementById('currentAvg').value);return a>0?(av/a)*100:null}
 }
 
-// Inverse: given a z-score, return the two-tailed alpha
-function alphaFromZ(z) {
-  // Approximation using the complementary error function
-  // P(Z > z) ≈ using Abramowitz & Stegun
-  const t = 1 / (1 + 0.2316419 * Math.abs(z));
-  const d1 = 0.319381530, d2 = -0.356563782, d3 = 1.781477937, d4 = -1.821255978, d5 = 1.330274429;
-  const phi = (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-z * z / 2);
-  const oneTail = phi * (d1*t + d2*t*t + d3*t*t*t + d4*t*t*t*t + d5*t*t*t*t*t);
-  return 2 * oneTail; // two-tailed
-}
-
-// Standard normal CDF
-function normalCDF(x) {
-  const t = 1 / (1 + 0.2316419 * Math.abs(x));
-  const d1 = 0.319381530, d2 = -0.356563782, d3 = 1.781477937, d4 = -1.821255978, d5 = 1.330274429;
-  const phi = (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-x * x / 2);
-  const cdf = 1 - phi * (d1*t + d2*t*t + d3*t*t*t + d4*t*t*t*t + d5*t*t*t*t*t);
-  return x >= 0 ? cdf : 1 - cdf;
-}
-
-// n per group for binary (equal split)
-function nPerGroupBinary(p, mde, alpha, power) {
-  const p1 = p;
-  const p2 = p + mde;
-  const zAlpha = zScore(alpha);
-  const zBeta = zScore((1 - power) * 2);
-  const pBar = (p1 + p2) / 2;
-  return Math.ceil(Math.pow(zAlpha * Math.sqrt(2 * pBar * (1 - pBar)) + zBeta * Math.sqrt(p1*(1-p1) + p2*(1-p2)), 2) / Math.pow(mde, 2));
-}
-
-// n per group for continuous (equal split)
-function nPerGroupContinuous(sd, mde, alpha, power) {
-  const zAlpha = zScore(alpha);
-  const zBeta = zScore((1 - power) * 2);
-  return Math.ceil(Math.pow(zAlpha + zBeta, 2) * 2 * sd * sd / (mde * mde));
-}
-
-// Unequal allocation: total N required given control fraction
-// nPerGroupEqual is the n needed per group assuming equal allocation.
-// For equal split (e.g. 50/50), total = nPerGroupEqual * numGroups.
-// For unequal split, we inflate by factor: (1/kC + 1/kT) / (1/kEqual + 1/kEqual)
-// where kEqual = 1/numGroups. This simplifies to:
-// totalN = nPerGroupEqual * numGroups^2 * (1/kC + 1/kT) / 4
-// Or equivalently: for each variant-vs-control comparison, effective n per arm is
-// N*kC*kT/(kC+kT), and we need that >= nPerGroupEqual.
-// So N >= nPerGroupEqual * (kC + kT) / (kC * kT)
-// But (kC + kT) is NOT 1 for multi-group — it's controlFrac + variantFrac.
-// The correct total: nPerGroupEqual * (1/kC + 1/kT) where kC and kT are
-// the fractions of TOTAL assigned to control and one variant respectively.
-// HOWEVER, nPerGroupEqual assumes each arm gets n users, i.e. total = n * 2 for a
-// two-sample test. So the relationship is:
-// For equal split: totalEqual = nPerGroupEqual * 2 (for each pairwise comparison)
-//   but we need nPerGroupEqual in EACH arm, so total = nPerGroupEqual * numGroups
-// For unequal split: we need n_control and n_variant such that
-//   the effective sample size matches. The effective n for a two-sample test with
-//   n1 and n2 is: n_eff = (n1 * n2) / (n1 + n2), and we need this to match
-//   what equal allocation gives: n_eff_equal = nPerGroupEqual / 2... NO.
-//
-// Let's be precise. For a two-sample z-test with n1 in control, n2 in treatment:
-//   SE = sigma * sqrt(1/n1 + 1/n2)
-// For equal allocation (n1 = n2 = n):
-//   SE = sigma * sqrt(2/n)
-// The sample size formula gives us n (per group) such that the test is powered.
-//
-// For unequal allocation with total N, control fraction kC, variant fraction kT:
-//   n1 = N * kC, n2 = N * kT
-//   SE = sigma * sqrt(1/(N*kC) + 1/(N*kT))
-// We need this SE <= sigma * sqrt(2/nPerGroupEqual):
-//   1/(N*kC) + 1/(N*kT) <= 2/nPerGroupEqual
-//   N >= nPerGroupEqual * (1/kC + 1/kT) / 2
-function requiredTotalUnequal(nPerGroupEqual, numGroups, controlFrac) {
-  const variantFrac = (1 - controlFrac) / (numGroups - 1);
-  return Math.ceil(nPerGroupEqual * (1 / controlFrac + 1 / variantFrac) / 2);
-}
-
-// Get control fraction based on learnings filter
-function getControlFraction(numGroups, filter) {
-  if (filter === 'maximize') return 1 / numGroups; // equal split
-  if (filter === 'balanced') {
-    if (numGroups === 2) return 0.30;
-    if (numGroups === 3) return 0.25;
-    return 0.20;
-  }
-  // minimize control
-  if (numGroups === 2) return 0.20;
-  if (numGroups === 3) return 0.20;
-  return 0.16;
-}
-
-// Get candidate splits ordered by filter preference
-function getCandidateSplits(numGroups, filter) {
-  let candidates;
-  if (numGroups === 2) {
-    candidates = [
-      { controlFrac: 0.20, label: '80/20', tier: 'aggressive' },
-      { controlFrac: 0.30, label: '70/30', tier: 'moderate' },
-      { controlFrac: 0.50, label: '50/50', tier: 'equal' }
-    ];
-  } else if (numGroups === 3) {
-    candidates = [
-      { controlFrac: 0.20, label: '40/40/20', tier: 'aggressive' },
-      { controlFrac: 0.25, label: '38/37/25', tier: 'moderate' },
-      { controlFrac: 1/3,  label: '33/33/33', tier: 'equal' }
-    ];
-  } else {
-    candidates = [
-      { controlFrac: 0.16, label: '28/28/28/16', tier: 'aggressive' },
-      { controlFrac: 0.20, label: '27/27/26/20', tier: 'moderate' },
-      { controlFrac: 0.25, label: '25/25/25/25', tier: 'equal' }
-    ];
-  }
-
-  // Reorder based on filter preference
-  if (filter === 'maximize') {
-    candidates.reverse(); // prefer equal first
-  } else if (filter === 'balanced') {
-    // moderate first, then equal, then aggressive
-    candidates = [candidates[1], candidates[2], candidates[0]];
-  }
-  // 'minimize' keeps default order: aggressive first
-
-  return candidates;
-}
-
-function formatNum(n) {
-  if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-  return n.toLocaleString();
-}
-
-// ──────────────────────────────────────────
-// UI HANDLERS
-// ──────────────────────────────────────────
-function handleKpiTypeChange(type) {
-  kpiType = type;
-  document.querySelectorAll('.binary-field').forEach(el => el.style.display = type === 'binary' ? '' : 'none');
-  document.querySelectorAll('.nonbinary-field').forEach(el => el.style.display = type === 'nonbinary' ? '' : 'none');
-  
-  const mdeSuffix = document.getElementById('mdeSuffix');
-  const mdeHelper = document.getElementById('mdeHelperText');
-  const mdePreview = document.getElementById('mdePreview');
-  mdePreview.style.display = 'none';
-  
-  if (type === 'binary') {
-    mdeSuffix.textContent = 'pp';
-    mdeHelper.innerHTML = 'Percentage points. <em>e.g., if baseline is 40% and you enter 2, you\'re looking to detect a shift to 42%.</em>';
-    document.getElementById('mdeInput').placeholder = '2';
-  } else {
-    mdeSuffix.textContent = '$ per user';
-    mdeHelper.innerHTML = 'Absolute dollar lift per user. <em>e.g., if avg is $47 and you enter 3, you\'re looking to detect a shift to $50.</em>';
-    document.getElementById('mdeInput').placeholder = '3';
-  }
-  
+function handleKpiTypeChange(type){
+  kpiType=type;
+  document.querySelectorAll('.binary-field').forEach(el=>el.style.display=type==='binary'?'':'none');
+  document.querySelectorAll('.continuous-field').forEach(el=>el.style.display=type==='continuous'?'':'none');
+  const h=document.getElementById('mdeHelperText');
+  h.innerHTML=type==='binary'
+    ?'Relative % lift on the baseline rate. <em>e.g., 5 means 5% lift — if baseline is 40%, detecting a shift to 42%.</em>'
+    :'Relative % lift on the current average. <em>e.g., 5 means 5% lift — if avg is $47, detecting ~$49.35.</em>';
+  document.getElementById('mdeInput').placeholder='5';
   document.getElementById('results').classList.remove('visible');
-  updateSolveHint();
-  updateMdePreview();
+  updateSolveHint();updateMdePreview();
 }
 
-function updateMdePreview() {
-  const preview = document.getElementById('mdePreview');
-  if (!kpiType) { preview.style.display = 'none'; return; }
-  
-  const mdeVal = parseFloat(document.getElementById('mdeInput').value);
-  if (isNaN(mdeVal) || mdeVal <= 0) { preview.style.display = 'none'; return; }
-  
-  if (kpiType === 'binary') {
-    const baseline = parseFloat(document.getElementById('proportion').value);
-    if (!isNaN(baseline) && baseline > 0) {
-      const pctLift = ((mdeVal / baseline) * 100).toFixed(1);
-      preview.style.display = '';
-      preview.textContent = `= detecting a shift from ${baseline}% → ${(baseline + mdeVal).toFixed(1)}% (${pctLift}% relative lift)`;
-    } else {
-      preview.style.display = '';
-      preview.textContent = `= detecting a ${mdeVal} percentage point shift`;
-    }
+function updateMdePreview(){
+  const el=document.getElementById('mdePreview');
+  if(!kpiType){el.style.display='none';return}
+  const lp=parseFloat(document.getElementById('mdeInput').value);
+  if(isNaN(lp)||lp<=0){el.style.display='none';return}
+  const abs=liftToAbs(lp);
+  if(abs===null){el.style.display='';el.textContent='Enter baseline above to see the absolute effect';return}
+  el.style.display='';
+  if(kpiType==='binary'){
+    const bp=parseFloat(document.getElementById('proportion').value);
+    el.textContent=`${lp}% lift = ${(abs*100).toFixed(2)} pp → detecting ${bp}% → ${(bp+abs*100).toFixed(2)}%`;
   } else {
-    const avg = parseFloat(document.getElementById('currentAvg').value);
-    const sd = parseFloat(document.getElementById('currentSD').value);
-    if (!isNaN(avg) && avg > 0) {
-      const pctLift = ((mdeVal / avg) * 100).toFixed(1);
-      preview.style.display = '';
-      let text = `= detecting a shift from $${avg} → $${(avg + mdeVal).toFixed(2)} (${pctLift}% relative lift)`;
-      if (!isNaN(sd) && sd > 0) {
-        const effectSize = (mdeVal / sd).toFixed(2);
-        text += ` · Effect size: ${effectSize}σ`;
-      }
-      preview.textContent = text;
-    } else {
-      preview.style.display = '';
-      preview.textContent = `= detecting a $${mdeVal.toFixed(2)} per-user lift`;
-    }
+    const avg=parseFloat(document.getElementById('currentAvg').value),sd=parseFloat(document.getElementById('currentSD').value);
+    let t=`${lp}% lift = $${abs.toFixed(2)}/user → detecting $${avg.toFixed(2)} → $${(avg+abs).toFixed(2)}`;
+    if(!isNaN(sd)&&sd>0)t+=`  · Effect size: ${(abs/sd).toFixed(2)}σ`;
+    el.textContent=t;
   }
 }
 
-function setLearnings(filter) {
-  learningsFilter = filter;
-  document.querySelectorAll('.learnings-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('lf-' + filter).classList.add('active');
+function setLearnings(f){learningsFilter=f;document.querySelectorAll('.learnings-btn').forEach(b=>b.classList.remove('active'));document.getElementById('lf-'+f).classList.add('active')}
+
+function updateSolveHint(){
+  const fields=gFS(),blanks=fields.filter(f=>f.blank);
+  const hint=document.getElementById('solveHint'),ht=document.getElementById('solveHintText');
+  ['audienceSize','numGroups','mdeInput','powerInput','confidenceInput'].forEach(id=>document.getElementById(id).classList.remove('solve-target'));
+  if(blanks.length===0){hint.style.display='';ht.innerHTML='<strong>All fields filled</strong> — will recommend the optimal group split.';}
+  else if(blanks.length===1){hint.style.display='';document.getElementById(blanks[0].id).classList.add('solve-target');const m={audienceSize:'Audience Size</strong> — "How many users do I need?"',numGroups:'# of Groups</strong> — "Max groups my audience supports?"',mdeInput:'MDE</strong> — "Smallest effect I can detect?"',powerInput:'Power</strong> — "What power do I get?"',confidenceInput:'Confidence</strong> — "What confidence level?"'};ht.innerHTML='<strong>Solving for '+m[blanks[0].id];}
+  else{hint.style.display='';ht.innerHTML=`<strong>${blanks.length} fields blank</strong> — leave exactly one blank to solve, or fill all for a split recommendation.`;}
 }
 
-function updateSolveHint() {
-  const fields = getFieldStates();
-  const blanks = fields.filter(f => f.blank);
-  const hint = document.getElementById('solveHint');
-  const hintText = document.getElementById('solveHintText');
-  
-  // Reset all styling
-  ['audienceSize','numGroups','mdeInput','powerInput','confidenceInput'].forEach(id => {
-    document.getElementById(id).classList.remove('solve-target');
-  });
+function gFS(){return['audienceSize','numGroups','mdeInput','powerInput','confidenceInput'].map(id=>({id,blank:document.getElementById(id).value.trim()===''}))}
 
-  if (blanks.length === 0) {
-    hint.style.display = '';
-    hintText.innerHTML = '<strong>All fields filled</strong> — will recommend the optimal group split based on your Learnings Filter.';
-  } else if (blanks.length === 1) {
-    hint.style.display = '';
-    const b = blanks[0];
-    document.getElementById(b.id).classList.add('solve-target');
-    const msgs = {
-      audienceSize: '<strong>Solving for Audience Size</strong> — "How many users do I need?"',
-      numGroups: '<strong>Solving for # of Groups</strong> — "What\'s the max groups my audience supports?"',
-      mdeInput: '<strong>Solving for MDE</strong> — "What\'s the smallest effect I can detect?"',
-      powerInput: '<strong>Solving for Power</strong> — "What power do I get with this setup?"',
-      confidenceInput: '<strong>Solving for Confidence</strong> — "What confidence level does this setup support?"'
-    };
-    hintText.innerHTML = msgs[b.id];
-  } else if (blanks.length > 1) {
-    hint.style.display = '';
-    hintText.innerHTML = `<strong>${blanks.length} fields blank</strong> — leave exactly one blank to solve for it, or fill all for a split recommendation.`;
-  } else {
-    hint.style.display = 'none';
+function solve(){
+  if(!kpiType){alert('Select a KPI Type.');return}
+  let bP,cA,cSD;
+  if(kpiType==='binary'){bP=parseFloat(document.getElementById('proportion').value);if(isNaN(bP)||bP<=0||bP>=100){alert('Enter a valid baseline (1–99%).');return}bP/=100}
+  else{cA=parseFloat(document.getElementById('currentAvg').value);cSD=parseFloat(document.getElementById('currentSD').value);if(isNaN(cA)||cA<=0){alert('Enter a valid average (> 0).');return}if(isNaN(cSD)||cSD<=0){alert('Enter a valid std dev (> 0).');return}}
+
+  const fields=gFS(),blanks=fields.filter(f=>f.blank);
+  if(blanks.length>1){alert('Leave at most one field blank.');return}
+  const aud=blanks.some(b=>b.id==='audienceSize')?null:parseInt(document.getElementById('audienceSize').value);
+  const ng=blanks.some(b=>b.id==='numGroups')?null:parseInt(document.getElementById('numGroups').value);
+  const lpR=blanks.some(b=>b.id==='mdeInput')?null:parseFloat(document.getElementById('mdeInput').value);
+  const pwR=blanks.some(b=>b.id==='powerInput')?null:parseFloat(document.getElementById('powerInput').value);
+  const cfR=blanks.some(b=>b.id==='confidenceInput')?null:parseFloat(document.getElementById('confidenceInput').value);
+
+  let mde=null;
+  if(lpR!==null){mde=liftToAbs(lpR);if(mde===null||mde<=0){alert('Check baseline and lift values.');return}}
+  const pw=pwR!==null?pwR/100:null, al=cfR!==null?(100-cfR)/100:null;
+  if(ng!==null&&(ng<2||ng>4)){alert('Groups: 2–4.');return}
+  if(lpR!==null&&lpR<=0){alert('Lift must be > 0.');return}
+  if(pwR!==null&&(pwR<50||pwR>99)){alert('Power: 50–99%.');return}
+  if(cfR!==null&&(cfR<70||cfR>99)){alert('Confidence: 70–99%.');return}
+
+  const sm=blanks.length===0?'split':blanks[0].id;
+  const npg=(m,a,p)=>kpiType==='binary'?nPGBin(bP,m,a,p):nPGCont(cSD,m,a,p);
+  const lfL=learningsFilter==='minimize'?'Minimize Control':'Maximize Learnings';
+
+  function fM(av){const lp=absToLift(av);if(kpiType==='binary'){const pp=(av*100).toFixed(1);return lp?`${lp.toFixed(1)}% lift (${pp} pp)`:`${pp} pp`}else{const d='$'+av.toFixed(2);return lp?`${lp.toFixed(1)}% lift (${d}/user)`:d}}
+
+  let r={};
+
+  if(sm==='audienceSize'){
+    const ne=npg(mde,al,pw),cf=getCF(ng,learningsFilter),tot=reqTotal(ne,ng,cf);
+    r={title:'Minimum Audience Required',sf:'Audience Size',sv:fmtN(tot),aud:tot,ng,mde,pw,al,cf,type:tot<100?'caution':'go',
+      msg:`<strong>You need at least ${fmtN(tot)} users</strong> to detect a ${fM(mde)} effect with ${(pw*100).toFixed(0)}% power and ${(100-al*100).toFixed(0)}% confidence (${lfL}).<br><br><em style="color:var(--text-dim)">Per group (equal split): ${fmtN(ne)}</em>`};
   }
+  else if(sm==='numGroups'){
+    let mg=0;for(let g=4;g>=2;g--)if(aud>=reqTotal(npg(mde,al,pw),g,getCF(g,learningsFilter))){mg=g;break}
+    if(!mg)r={title:'Insufficient Audience',sf:'# Groups',sv:'—',aud,ng:0,mde,pw,al,cf:.5,type:'warning',msg:`<strong>Audience of ${fmtN(aud)} can't support 2 groups</strong> at this MDE/power/confidence.`};
+    else{const cf=getCF(mg,learningsFilter);r={title:'Max Groups Supported',sf:'# Groups',sv:mg,aud,ng:mg,mde,pw,al,cf,type:'go',msg:`<strong>Supports up to ${mg} groups</strong> (1 control + ${mg-1} variant${mg>2?'s':''}) with ${lfL}, detecting a ${fM(mde)} effect.`}}
+  }
+  else if(sm==='mdeInput'){
+    const cf=getCF(ng,learningsFilter),vf=(1-cf)/(ng-1),n1=Math.floor(aud*cf),n2=Math.floor(aud*vf);
+    const za=zScore(al),zb=zScore((1-pw)*2);let sv;
+    if(kpiType==='binary'){let lo=.0001,hi=.5;for(let i=0;i<100;i++){const mid=(lo+hi)/2,p2=bP+mid,pB=(bP+p2)/2;normalCDF((mid-za*Math.sqrt(pB*(1-pB)*(1/n1+1/n2)))/Math.sqrt(bP*(1-bP)/n1+p2*(1-p2)/n2))<pw?lo=mid:hi=mid}sv=(lo+hi)/2}
+    else sv=(za+zb)*cSD*Math.sqrt(1/n1+1/n2);
+    r={title:'Minimum Detectable Effect',sf:'MDE',sv:fM(sv),aud,ng,mde:sv,pw,al,cf,type:'go',msg:`<strong>Smallest detectable effect: ${fM(sv)}</strong> with ${fmtN(aud)} users across ${ng} groups (${lfL}).`};
+  }
+  else if(sm==='powerInput'){
+    const cf=getCF(ng,learningsFilter),n1=Math.floor(aud*cf),n2=Math.floor(aud*(1-cf)/(ng-1)),za=zScore(al);let sp;
+    if(kpiType==='binary'){const p2=bP+mde,pB=(bP+p2)/2;sp=normalCDF((mde-za*Math.sqrt(pB*(1-pB)*(1/n1+1/n2)))/Math.sqrt(bP*(1-bP)/n1+p2*(1-p2)/n2))}
+    else{const se=cSD*Math.sqrt(1/n1+1/n2);sp=normalCDF((mde-za*se)/se)}
+    sp=Math.min(.999,Math.max(0,sp));const pp=(sp*100).toFixed(1);
+    r={title:'Achievable Power',sf:'Power',sv:pp+'%',aud,ng,mde,pw:sp,al,cf,type:sp>=.8?'go':sp>=.6?'caution':'warning',
+      msg:sp>=.8?`<strong>Power: ${pp}%</strong> — strong. ${pp}% chance of detecting a ${fM(mde)} effect.`:sp>=.6?`<strong>Power: ${pp}%</strong> — moderate. Consider more users or larger lift.`:`<strong>Power: ${pp}%</strong> — low. Test is likely underpowered.`};
+  }
+  else if(sm==='confidenceInput'){
+    const cf=getCF(ng,learningsFilter),n1=Math.floor(aud*cf),n2=Math.floor(aud*(1-cf)/(ng-1)),zb=zScore((1-pw)*2);let sa;
+    if(kpiType==='binary'){let lo=.001,hi=.5;for(let i=0;i<100;i++){const mid=(lo+hi)/2,zaT=zScore(mid),p2=bP+mde,pB=(bP+p2)/2;normalCDF((mde-zaT*Math.sqrt(pB*(1-pB)*(1/n1+1/n2)))/Math.sqrt(bP*(1-bP)/n1+p2*(1-p2)/n2))<pw?hi=mid:lo=mid}sa=(lo+hi)/2}
+    else{const se=cSD*Math.sqrt(1/n1+1/n2),zaS=mde/se-zb;sa=zaS>0?alphaFromZ(zaS):1}
+    sa=Math.min(.5,Math.max(.001,sa));const cp=((1-sa)*100).toFixed(1);
+    r={title:'Achievable Confidence',sf:'Confidence',sv:cp+'%',aud,ng,mde,pw,al:sa,cf,type:(1-sa)>=.95?'go':(1-sa)>=.9?'caution':'warning',
+      msg:(1-sa)>=.95?`<strong>Confidence: ${cp}%</strong> — definitive.`:(1-sa)>=.9?`<strong>Confidence: ${cp}%</strong> — directional.`:`<strong>Confidence: ${cp}%</strong> — low. Need more users or larger lift.`};
+  }
+  else if(sm==='split'){
+    const ne=npg(mde,al,pw),cands=getCands(ng,learningsFilter);let ch=null,chM=null;
+    for(const c of cands){const m=reqTotal(ne,ng,c.cf);if(aud>=m){ch=c;chM=m;break}}
+    if(!ch){const fb=cands[cands.length-1];ch=fb;chM=reqTotal(ne,ng,fb.cf)}
+    const hr=aud/chM;
+    if(aud<chM)r={title:'Recommended Split',sf:'Split',sv:'—',aud,ng,mde,pw,al,cf:1/ng,type:'warning',msg:`<strong>Insufficient audience.</strong> Need ${fmtN(chM)}, have ${fmtN(aud)}.`};
+    else r={title:'Recommended Split',sf:'Split',sv:ch.l,aud,ng,mde,pw,al,cf:ch.cf,type:hr>=1.5?'go':'caution',msg:`<strong>Recommended: ${ch.l} split</strong> (${lfL}). ${hr.toFixed(1)}x headroom. `+(hr>=1.5?`Plenty of room to detect a ${fM(mde)} effect.`:`Tight — works but limited headroom.`)};
+  }
+  renderR(r,sm);
 }
 
-function getFieldStates() {
-  const ids = ['audienceSize', 'numGroups', 'mdeInput', 'powerInput', 'confidenceInput'];
-  return ids.map(id => ({
-    id,
-    value: document.getElementById(id).value.trim(),
-    blank: document.getElementById(id).value.trim() === ''
-  }));
-}
-
-// ──────────────────────────────────────────
-// SOLVER
-// ──────────────────────────────────────────
-function solve() {
-  // Validate Section 1
-  if (!kpiType) { alert('Please select a KPI Type.'); return; }
-  
-  let baselineP, currentAvg, currentSD;
-  if (kpiType === 'binary') {
-    baselineP = parseFloat(document.getElementById('proportion').value);
-    if (isNaN(baselineP) || baselineP <= 0 || baselineP >= 100) { alert('Please enter a valid baseline proportion (1–99%).'); return; }
-    baselineP = baselineP / 100;
-  } else {
-    currentAvg = parseFloat(document.getElementById('currentAvg').value);
-    currentSD = parseFloat(document.getElementById('currentSD').value);
-    if (isNaN(currentAvg)) { alert('Please enter the current average.'); return; }
-    if (isNaN(currentSD) || currentSD <= 0) { alert('Please enter a valid standard deviation (> 0).'); return; }
+function renderR(r,sm){
+  document.getElementById('resultTitle').textContent=r.title;
+  const ic={go:'✅',caution:'⚠️',warning:'🚫'};
+  let h=`<div class="recommendation ${r.type}"><span class="rec-icon">${ic[r.type]}</span><span class="rec-text">${r.msg}</span></div>`;
+  let mg='—';if(r.mde){const lp=absToLift(r.mde);mg=lp?`${lp.toFixed(1)}%`:kpiType==='binary'?`${(r.mde*100).toFixed(1)}pp`:`$${r.mde.toFixed(2)}`}
+  const items=[{l:'Audience',v:r.aud?fmtN(r.aud):'—',s:sm==='audienceSize'},{l:'Groups',v:r.ng||'—',s:sm==='numGroups'},{l:'MDE (Lift)',v:mg,s:sm==='mdeInput'},{l:'Power',v:r.pw?(r.pw*100).toFixed(0)+'%':'—',s:sm==='powerInput'},{l:'Confidence',v:r.al?((1-r.al)*100).toFixed(0)+'%':'—',s:sm==='confidenceInput'},{l:'Strategy',v:learningsFilter==='minimize'?'Min Control':'Max Learnings',s:false}];
+  h+='<div class="result-grid">';items.forEach(i=>h+=`<div class="result-item${i.s?' solved':''}"><div class="value">${i.v}</div><div class="label">${i.l}${i.s?' ✨':''}</div></div>`);h+='</div>';
+  document.getElementById('resultContent').innerHTML=h;
+  if(r.ng>=2&&r.aud&&r.type!=='warning')renderSV(r.aud,r.ng,r.cf);else document.getElementById('splitViz').innerHTML='';
+  let d='';
+  if(r.ng>=2&&r.cf){
+    const cp=(r.cf*100).toFixed(0),vp=((1-r.cf)/(r.ng-1)*100).toFixed(0);
+    d+=`<div class="detail-row"><span class="detail-label">Control allocation</span><span class="detail-value">${cp}%</span></div>`;
+    d+=`<div class="detail-row"><span class="detail-label">Per-variant allocation</span><span class="detail-value">${vp}%</span></div>`;
+    if(r.aud){d+=`<div class="detail-row"><span class="detail-label">Users in control</span><span class="detail-value">${fmtN(Math.round(r.aud*r.cf))}</span></div>`;d+=`<div class="detail-row"><span class="detail-label">Users per variant</span><span class="detail-value">${fmtN(Math.round(r.aud*(1-r.cf)/(r.ng-1)))}</span></div>`}
+    if(r.mde)d+=kpiType==='binary'?`<div class="detail-row"><span class="detail-label">Absolute MDE</span><span class="detail-value">${(r.mde*100).toFixed(2)} pp</span></div>`:`<div class="detail-row"><span class="detail-label">Absolute MDE</span><span class="detail-value">$${r.mde.toFixed(2)} / user</span></div>`;
   }
-
-  // Determine solve mode
-  const fields = getFieldStates();
-  const blanks = fields.filter(f => f.blank);
-  
-  if (blanks.length > 1) { alert('Please leave at most one field blank. Fill the others to solve.'); return; }
-
-  const audience = blanks.some(b => b.id === 'audienceSize') ? null : parseInt(document.getElementById('audienceSize').value);
-  const numGroups = blanks.some(b => b.id === 'numGroups') ? null : parseInt(document.getElementById('numGroups').value);
-  const mdeRaw = blanks.some(b => b.id === 'mdeInput') ? null : parseFloat(document.getElementById('mdeInput').value);
-  const powerRaw = blanks.some(b => b.id === 'powerInput') ? null : parseFloat(document.getElementById('powerInput').value);
-  const confRaw = blanks.some(b => b.id === 'confidenceInput') ? null : parseFloat(document.getElementById('confidenceInput').value);
-
-  // Convert
-  const mde = mdeRaw !== null ? (kpiType === 'binary' ? mdeRaw / 100 : mdeRaw) : null;
-  const power = powerRaw !== null ? powerRaw / 100 : null;
-  const alpha = confRaw !== null ? (100 - confRaw) / 100 : null;
-
-  // Validate filled fields
-  if (numGroups !== null && (numGroups < 2 || numGroups > 4)) { alert('Number of groups must be 2–4.'); return; }
-  if (mdeRaw !== null && mdeRaw <= 0) { alert('MDE must be > 0.'); return; }
-  if (powerRaw !== null && (powerRaw < 50 || powerRaw > 99)) { alert('Power must be 50–99%.'); return; }
-  if (confRaw !== null && (confRaw < 70 || confRaw > 99)) { alert('Confidence must be 70–99%.'); return; }
-
-  let solveMode = blanks.length === 0 ? 'split' : blanks[0].id;
-
-  // Helper: compute nPerGroup
-  function getNPerGroup(mdeVal, alphaVal, powerVal) {
-    if (kpiType === 'binary') {
-      return nPerGroupBinary(baselineP, mdeVal, alphaVal, powerVal);
-    } else {
-      return nPerGroupContinuous(currentSD, mdeVal, alphaVal, powerVal);
-    }
-  }
-
-  let result = {};
-
-  // ─── SOLVE FOR AUDIENCE ───
-  if (solveMode === 'audienceSize') {
-    const nEq = getNPerGroup(mde, alpha, power);
-    const cf = getControlFraction(numGroups, learningsFilter);
-    const totalNeeded = requiredTotalUnequal(nEq, numGroups, cf);
-    
-    // Sanity check: warn if MDE is very large relative to baseline/SD
-    let sanityWarning = '';
-    if (kpiType === 'nonbinary' && mde > currentSD * 0.5) {
-      sanityWarning = `<br><br><em style="color: var(--amber);">⚠ Note: Your MDE ($${mde}) is ${(mde/currentSD*100).toFixed(0)}% of the standard deviation ($${currentSD}). This is a very large effect size — make sure you entered MDE as an absolute dollar amount, not a percentage.</em>`;
-    } else if (kpiType === 'binary' && mde > 0.10) {
-      sanityWarning = `<br><br><em style="color: var(--amber);">⚠ Note: Your MDE (${(mde*100).toFixed(1)}pp) is quite large. Make sure this is what you intend — most tests look for 1–5pp effects.</em>`;
-    }
-    
-    result = {
-      title: 'Minimum Audience Required',
-      solvedField: 'Audience Size',
-      solvedValue: formatNum(totalNeeded),
-      solvedRaw: totalNeeded,
-      audience: totalNeeded,
-      numGroups, mde, power, alpha,
-      controlFrac: cf,
-      type: totalNeeded < 100 ? 'caution' : 'go',
-      msg: `<strong>You need at least ${formatNum(totalNeeded)} users</strong> to detect a ${formatMDE(mdeRaw)} effect with ${(power*100).toFixed(0)}% power and ${(100-alpha*100).toFixed(0)}% confidence, using a ${getLearningsLabel()} split strategy. <br><br><em style="color: var(--text-dim);">Required per group (equal split): ${formatNum(nEq)} users</em>${sanityWarning}`
-    };
-  }
-
-  // ─── SOLVE FOR # GROUPS ───
-  else if (solveMode === 'numGroups') {
-    let maxGroups = 0;
-    for (let g = 4; g >= 2; g--) {
-      const nEq = getNPerGroup(mde, alpha, power);
-      const cf = getControlFraction(g, learningsFilter);
-      const totalNeeded = requiredTotalUnequal(nEq, g, cf);
-      if (audience >= totalNeeded) { maxGroups = g; break; }
-    }
-    
-    if (maxGroups === 0) {
-      result = {
-        title: 'Insufficient Audience',
-        solvedField: '# Groups',
-        solvedValue: '—',
-        audience, numGroups: 0, mde, power, alpha,
-        controlFrac: 0.5,
-        type: 'warning',
-        msg: `<strong>Your audience of ${formatNum(audience)} can't support even 2 groups</strong> at the specified MDE, power, and confidence. Consider increasing audience, raising MDE, or lowering power/confidence.`
-      };
-    } else {
-      const cf = getControlFraction(maxGroups, learningsFilter);
-      result = {
-        title: 'Max Groups Supported',
-        solvedField: '# Groups',
-        solvedValue: maxGroups,
-        solvedRaw: maxGroups,
-        audience, numGroups: maxGroups, mde, power, alpha,
-        controlFrac: cf,
-        type: 'go',
-        msg: `<strong>Your audience supports up to ${maxGroups} groups</strong> (1 control + ${maxGroups - 1} variant${maxGroups > 2 ? 's' : ''}) with a ${getLearningsLabel()} split, detecting a ${formatMDE(mdeRaw)} effect at ${(power*100).toFixed(0)}% power / ${(100-alpha*100).toFixed(0)}% confidence.`
-      };
-    }
-  }
-
-  // ─── SOLVE FOR MDE ───
-  else if (solveMode === 'mdeInput') {
-    const cf = getControlFraction(numGroups, learningsFilter);
-    const variantFrac = (1 - cf) / (numGroups - 1);
-    const nControl = Math.floor(audience * cf);
-    const nVariant = Math.floor(audience * variantFrac);
-    // SE for two-sample test: sigma * sqrt(1/n1 + 1/n2)
-    const seFactor = Math.sqrt(1/nControl + 1/nVariant);
-    
-    const zAlpha = zScore(alpha);
-    const zBeta = zScore((1 - power) * 2);
-    
-    let solvedMDE;
-    if (kpiType === 'binary') {
-      // Binary: iterative solve since formula isn't cleanly invertible
-      // We need to find MDE such that the required n_per_group (equal split) 
-      // equals the effective per-group n from our unequal allocation.
-      // Effective per-group n = 1 / (1/n1 + 1/n2) * 2 ... actually let's just 
-      // use the SE directly. Power equation:
-      // MDE / SE_total >= zAlpha + zBeta (approximately)
-      // But binary SE depends on MDE itself, so iterate:
-      let lo = 0.0001, hi = 0.5;
-      for (let i = 0; i < 100; i++) {
-        const mid = (lo + hi) / 2;
-        const p1 = baselineP, p2 = baselineP + mid;
-        const pBar = (p1 + p2) / 2;
-        // SE under null
-        const se0 = Math.sqrt(pBar*(1-pBar) * (1/nControl + 1/nVariant));
-        // SE under alternative
-        const seA = Math.sqrt(p1*(1-p1)/nControl + p2*(1-p2)/nVariant);
-        const powerAchieved = normalCDF((mid - zAlpha * se0) / seA);
-        if (powerAchieved < power) lo = mid;
-        else hi = mid;
-      }
-      solvedMDE = (lo + hi) / 2;
-    } else {
-      // Continuous: MDE = (z_alpha + z_beta) * SD * sqrt(1/n1 + 1/n2)
-      solvedMDE = (zAlpha + zBeta) * currentSD * seFactor;
-    }
-
-    const mdeDisplay = kpiType === 'binary' ? (solvedMDE * 100).toFixed(2) + ' pp' : '$' + solvedMDE.toFixed(2);
-    
-    result = {
-      title: 'Minimum Detectable Effect',
-      solvedField: 'MDE',
-      solvedValue: mdeDisplay,
-      solvedRaw: solvedMDE,
-      audience, numGroups, mde: solvedMDE, power, alpha,
-      controlFrac: cf,
-      type: solvedMDE < (kpiType === 'binary' ? 0.05 : 5) ? 'go' : 'caution',
-      msg: `<strong>Smallest detectable effect: ${mdeDisplay}</strong> with ${formatNum(audience)} users across ${numGroups} groups using a ${getLearningsLabel()} split at ${(power*100).toFixed(0)}% power / ${(100-alpha*100).toFixed(0)}% confidence.`
-    };
-  }
-
-  // ─── SOLVE FOR POWER ───
-  else if (solveMode === 'powerInput') {
-    const cf = getControlFraction(numGroups, learningsFilter);
-    const variantFrac = (1 - cf) / (numGroups - 1);
-    const nControl = Math.floor(audience * cf);
-    const nVariant = Math.floor(audience * variantFrac);
-    
-    const zAlpha = zScore(alpha);
-    
-    let solvedPower;
-    if (kpiType === 'binary') {
-      const p1 = baselineP, p2 = baselineP + mde;
-      const pBar = (p1 + p2) / 2;
-      const se0 = Math.sqrt(pBar*(1-pBar) * (1/nControl + 1/nVariant));
-      const seA = Math.sqrt(p1*(1-p1)/nControl + p2*(1-p2)/nVariant);
-      const zBeta = (mde - zAlpha * se0) / seA;
-      solvedPower = normalCDF(zBeta);
-    } else {
-      const se = currentSD * Math.sqrt(1/nControl + 1/nVariant);
-      const zBeta = (mde - zAlpha * se) / se;
-      solvedPower = normalCDF(zBeta);
-    }
-
-    solvedPower = Math.min(0.999, Math.max(0, solvedPower));
-    const powerPct = (solvedPower * 100).toFixed(1);
-    
-    result = {
-      title: 'Achievable Power',
-      solvedField: 'Power',
-      solvedValue: powerPct + '%',
-      solvedRaw: solvedPower,
-      audience, numGroups, mde, power: solvedPower, alpha,
-      controlFrac: cf,
-      type: solvedPower >= 0.8 ? 'go' : solvedPower >= 0.6 ? 'caution' : 'warning',
-      msg: solvedPower >= 0.8
-        ? `<strong>Power: ${powerPct}%</strong> — strong. You have a ${powerPct}% chance of detecting a ${formatMDE(kpiType === 'binary' ? mde * 100 : mde)} effect with this setup.`
-        : solvedPower >= 0.6
-        ? `<strong>Power: ${powerPct}%</strong> — moderate. Consider increasing audience or MDE to improve power above 80%.`
-        : `<strong>Power: ${powerPct}%</strong> — low. This test is likely underpowered. You'll miss real effects more often than you'd catch them.`
-    };
-  }
-
-  // ─── SOLVE FOR CONFIDENCE ───
-  else if (solveMode === 'confidenceInput') {
-    const cf = getControlFraction(numGroups, learningsFilter);
-    const variantFrac = (1 - cf) / (numGroups - 1);
-    const nControl = Math.floor(audience * cf);
-    const nVariant = Math.floor(audience * variantFrac);
-    
-    const zBeta = zScore((1 - power) * 2);
-    
-    let solvedAlpha;
-    if (kpiType === 'binary') {
-      // Iterative solve
-      let lo = 0.001, hi = 0.5;
-      for (let i = 0; i < 100; i++) {
-        const mid = (lo + hi) / 2;
-        const zAlphaTest = zScore(mid);
-        const p1 = baselineP, p2 = baselineP + mde;
-        const pBar = (p1 + p2) / 2;
-        const se0 = Math.sqrt(pBar*(1-pBar) * (1/nControl + 1/nVariant));
-        const seA = Math.sqrt(p1*(1-p1)/nControl + p2*(1-p2)/nVariant);
-        const achievedPower = normalCDF((mde - zAlphaTest * se0) / seA);
-        if (achievedPower < power) hi = mid; // need less confidence (more alpha)
-        else lo = mid;
-      }
-      solvedAlpha = (lo + hi) / 2;
-    } else {
-      // z_alpha = MDE / (SD * sqrt(1/n1 + 1/n2)) - z_beta
-      const se = currentSD * Math.sqrt(1/nControl + 1/nVariant);
-      const zAlphaSolved = mde / se - zBeta;
-      solvedAlpha = zAlphaSolved > 0 ? alphaFromZ(zAlphaSolved) : 1;
-    }
-    
-    solvedAlpha = Math.min(0.5, Math.max(0.001, solvedAlpha));
-    const confPct = ((1 - solvedAlpha) * 100).toFixed(1);
-    
-    result = {
-      title: 'Achievable Confidence Level',
-      solvedField: 'Confidence',
-      solvedValue: confPct + '%',
-      solvedRaw: 1 - solvedAlpha,
-      audience, numGroups, mde, power, alpha: solvedAlpha,
-      controlFrac: cf,
-      type: (1 - solvedAlpha) >= 0.95 ? 'go' : (1 - solvedAlpha) >= 0.90 ? 'caution' : 'warning',
-      msg: (1 - solvedAlpha) >= 0.95
-        ? `<strong>Achievable confidence: ${confPct}%</strong> — you can run a definitive test at this level.`
-        : (1 - solvedAlpha) >= 0.90
-        ? `<strong>Achievable confidence: ${confPct}%</strong> — directional. Sufficient for most promo tests, but not definitive.`
-        : `<strong>Achievable confidence: ${confPct}%</strong> — low. Consider increasing audience or MDE to support a higher confidence level.`
-    };
-  }
-
-  // ─── ALL FILLED: RECOMMEND SPLIT ───
-  else if (solveMode === 'split') {
-    const nEq = getNPerGroup(mde, alpha, power);
-    const candidates = getCandidateSplits(numGroups, learningsFilter);
-    
-    let chosenSplit = null, chosenMinTotal = null;
-    for (const cand of candidates) {
-      const minTotal = requiredTotalUnequal(nEq, numGroups, cand.controlFrac);
-      if (audience >= minTotal) {
-        chosenSplit = cand;
-        chosenMinTotal = minTotal;
-        break;
-      }
-    }
-    
-    if (!chosenSplit) {
-      const fallback = candidates[candidates.length - 1];
-      chosenSplit = fallback;
-      chosenMinTotal = requiredTotalUnequal(nEq, numGroups, fallback.controlFrac);
-    }
-
-    const headroom = audience / chosenMinTotal;
-
-    if (audience < chosenMinTotal) {
-      result = {
-        title: 'Recommended Split',
-        solvedField: 'Split',
-        solvedValue: '—',
-        audience, numGroups, mde, power, alpha,
-        controlFrac: 1/numGroups,
-        type: 'warning',
-        msg: `<strong>Insufficient audience.</strong> You need at least ${formatNum(chosenMinTotal)} users but only have ${formatNum(audience)}. Consider increasing audience size, accepting a larger MDE, or lowering power/confidence.`
-      };
-    } else {
-      result = {
-        title: 'Recommended Split',
-        solvedField: 'Split',
-        solvedValue: chosenSplit.label,
-        audience, numGroups, mde, power, alpha,
-        controlFrac: chosenSplit.controlFrac,
-        type: headroom >= 1.5 ? 'go' : 'caution',
-        msg: `<strong>Recommended: ${chosenSplit.label} split</strong> (${getLearningsLabel()} strategy). ${headroom.toFixed(1)}x headroom. ` +
-             (headroom >= 1.5
-               ? `Plenty of room to detect a ${formatMDE(kpiType === 'binary' ? mde * 100 : mde)} effect.`
-               : `Audience is tight — this split works but with limited headroom.`)
-      };
-    }
-  }
-
-  renderResults(result, solveMode);
-}
-
-function formatMDE(raw) {
-  if (kpiType === 'binary') return raw.toFixed(1) + ' pp';
-  return '$' + raw.toFixed(2);
-}
-
-function getLearningsLabel() {
-  if (learningsFilter === 'minimize') return 'Minimize Control';
-  if (learningsFilter === 'maximize') return 'Maximize Learnings';
-  return 'Balanced';
-}
-
-// ──────────────────────────────────────────
-// RENDER RESULTS
-// ──────────────────────────────────────────
-function renderResults(r, solveMode) {
-  document.getElementById('resultTitle').textContent = r.title;
-
-  const icons = { go: '✅', caution: '⚠️', warning: '🚫' };
-  let html = `<div class="recommendation ${r.type}">
-    <span class="rec-icon">${icons[r.type]}</span>
-    <span class="rec-text">${r.msg}</span>
-  </div>`;
-
-  // Result summary grid
-  const items = [
-    { label: 'Audience', value: r.audience ? formatNum(r.audience) : '—', solved: solveMode === 'audienceSize' },
-    { label: 'Groups', value: r.numGroups || '—', solved: solveMode === 'numGroups' },
-    { label: 'MDE', value: r.mde ? formatMDE(kpiType === 'binary' ? r.mde * 100 : r.mde) : '—', solved: solveMode === 'mdeInput' },
-    { label: 'Power', value: r.power ? (r.power * 100).toFixed(0) + '%' : '—', solved: solveMode === 'powerInput' },
-    { label: 'Confidence', value: r.alpha ? ((1 - r.alpha) * 100).toFixed(0) + '%' : '—', solved: solveMode === 'confidenceInput' },
-    { label: 'Strategy', value: getLearningsLabel(), solved: false }
-  ];
-
-  html += '<div class="result-grid">';
-  items.forEach(item => {
-    html += `<div class="result-item${item.solved ? ' solved' : ''}">
-      <div class="value">${item.value}</div>
-      <div class="label">${item.label}${item.solved ? ' ✨' : ''}</div>
-    </div>`;
-  });
-  html += '</div>';
-
-  document.getElementById('resultContent').innerHTML = html;
-
-  // Render split viz if applicable
-  if (r.numGroups && r.numGroups >= 2 && r.audience && r.type !== 'warning') {
-    renderSplitViz(r.audience, r.numGroups, r.controlFrac);
-  } else {
-    document.getElementById('splitViz').innerHTML = '';
-  }
-
-  // Detail rows
-  let detailHTML = '';
-  if (r.numGroups && r.numGroups >= 2 && r.controlFrac) {
-    const controlPct = (r.controlFrac * 100).toFixed(0);
-    const variantPct = ((1 - r.controlFrac) / (r.numGroups - 1) * 100).toFixed(0);
-    detailHTML += `<div class="detail-row"><span class="detail-label">Control allocation</span><span class="detail-value">${controlPct}%</span></div>`;
-    detailHTML += `<div class="detail-row"><span class="detail-label">Per-variant allocation</span><span class="detail-value">${variantPct}%</span></div>`;
-    if (r.audience) {
-      detailHTML += `<div class="detail-row"><span class="detail-label">Users in control</span><span class="detail-value">${formatNum(Math.round(r.audience * r.controlFrac))}</span></div>`;
-      detailHTML += `<div class="detail-row"><span class="detail-label">Users per variant</span><span class="detail-value">${formatNum(Math.round(r.audience * (1 - r.controlFrac) / (r.numGroups - 1)))}</span></div>`;
-    }
-  }
-  document.getElementById('resultDetails').innerHTML = detailHTML;
-
+  document.getElementById('resultDetails').innerHTML=d;
   document.getElementById('results').classList.add('visible');
-  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function renderSplitViz(audience, numGroups, controlFrac) {
-  const groupColors = ['variant-a', 'variant-b', 'variant-c'];
-  const groupLabels = ['Variant A', 'Variant B', 'Variant C'];
-  const controlPct = Math.round(controlFrac * 100);
-  const variantTotalPct = 100 - controlPct;
-  
-  let splits = [];
-  if (numGroups === 2) {
-    splits = [
-      { pct: variantTotalPct, type: 'variant-a', label: 'Variant' },
-      { pct: controlPct, type: 'control', label: 'Control' }
-    ];
-  } else {
-    const numVariants = numGroups - 1;
-    const vPct = Math.floor(variantTotalPct / numVariants);
-    for (let i = 0; i < numVariants; i++) {
-      const thisPct = i === 0 ? variantTotalPct - vPct * (numVariants - 1) : vPct;
-      splits.push({ pct: thisPct, type: groupColors[i], label: groupLabels[i] });
-    }
-    splits.push({ pct: controlPct, type: 'control', label: 'Control' });
-  }
-
-  let barHTML = splits.map(s => `<div class="split-segment ${s.type}" style="width:${s.pct}%">${s.pct}%</div>`).join('');
-  let legendHTML = splits.map(s => `<div class="legend-item"><span class="legend-dot ${s.type}"></span>${s.label} (${formatNum(Math.round(audience * s.pct / 100))} users)</div>`).join('');
-
-  document.getElementById('splitViz').innerHTML = `
-    <div class="split-bar-container">${barHTML}</div>
-    <div class="split-legend">${legendHTML}</div>`;
+function renderSV(aud,ng,cf){
+  const colors=['variant-a','variant-b','variant-c'],labels=['Variant A','Variant B','Variant C'];
+  const cp=Math.round(cf*100),vtp=100-cp;let splits=[];
+  if(ng===2)splits=[{pct:vtp,type:'variant-a',label:'Variant'},{pct:cp,type:'control',label:'Control'}];
+  else{const nv=ng-1,vp=Math.floor(vtp/nv);for(let i=0;i<nv;i++)splits.push({pct:i===0?vtp-vp*(nv-1):vp,type:colors[i],label:labels[i]});splits.push({pct:cp,type:'control',label:'Control'})}
+  document.getElementById('splitViz').innerHTML=`<div class="split-bar-container">${splits.map(s=>`<div class="split-segment ${s.type}" style="width:${s.pct}%">${s.pct}%</div>`).join('')}</div><div class="split-legend">${splits.map(s=>`<div class="legend-item"><span class="legend-dot ${s.type}"></span>${s.label} (${fmtN(Math.round(aud*s.pct/100))} users)</div>`).join('')}</div>`;
 }
 
-// ──────────────────────────────────────────
-// DURATION GUIDE (same as before)
-// ──────────────────────────────────────────
-const quizAnswers = {};
-
-function selectQuiz(question, answer, btn) {
-  quizAnswers[question] = answer;
-  document.querySelectorAll('#' + question + ' .quiz-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-}
-
-function calculateDuration() {
-  if (!quizAnswers.q1 || !quizAnswers.q2 || !quizAnswers.q3 || !quizAnswers.q4) {
-    alert('Please answer all four questions.');
-    return;
-  }
-
-  let exposureMin = 0, exposureMax = 0, observationMin = 0, observationMax = 0;
-
-  if (quizAnswers.q1 === 'action') {
-    exposureMin = 1; exposureMax = 2; observationMin = 1; observationMax = 2;
-  } else {
-    exposureMin = 3; exposureMax = 5; observationMin = 2; observationMax = 3;
-  }
-
-  if (quizAnswers.q2 === 'weekly') { exposureMin += 1; exposureMax += 1; }
-  else if (quizAnswers.q2 === 'sporadic') { exposureMin += 2; exposureMax += 2; }
-
-  if (quizAnswers.q3 === 'minor') { exposureMax += 1; }
-  else if (quizAnswers.q3 === 'major') { exposureMin += 1; exposureMax += 2; }
-
-  if (quizAnswers.q4 === 'fast') { exposureMin = Math.max(1, exposureMin - 1); observationMin = Math.max(1, observationMin - 1); }
-  else if (quizAnswers.q4 === 'patient') { exposureMax += 1; observationMax += 1; }
-
-  const totalMin = exposureMin + observationMin;
-  const totalMax = exposureMax + observationMax;
-
-  let recHTML;
-  if (quizAnswers.q1 === 'action') {
-    recHTML = `<div class="recommendation go"><span class="rec-icon">📅</span><span class="rec-text"><strong>Recommended: ${totalMin}–${totalMax} weeks total.</strong> Since you're measuring a one-time action, the exposure period can be short.</span></div>`;
-  } else {
-    recHTML = `<div class="recommendation go"><span class="rec-icon">📅</span><span class="rec-text"><strong>Recommended: ${totalMin}–${totalMax} weeks total.</strong> Give users ${exposureMin}–${exposureMax} weeks of promo exposure, then ${observationMin}–${observationMax} weeks of observation.</span></div>`;
-  }
-
-  const labels = {
-    q1: { action: 'One-time action', behavior: 'Sustained behavior change' },
-    q2: { daily: 'Daily', weekly: 'Weekly', sporadic: 'Sporadic / Event-driven' },
-    q3: { clean: 'Clean window', minor: 'Minor events', major: 'Major disruption' },
-    q4: { fast: 'Need results fast', balanced: 'Balanced', patient: 'Can be patient' }
-  };
-
-  let breakdownHTML = `
-    <div class="detail-row"><span class="detail-label">Exposure Period</span><span class="detail-value">${exposureMin}–${exposureMax} weeks</span></div>
-    <div class="detail-row"><span class="detail-label">Observation Period</span><span class="detail-value">${observationMin}–${observationMax} weeks</span></div>
-    <div class="detail-row"><span class="detail-label">Total Duration</span><span class="detail-value"><strong>${totalMin}–${totalMax} weeks</strong></span></div>
-    <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
-      <div class="detail-row"><span class="detail-label">Measuring</span><span class="detail-value">${labels.q1[quizAnswers.q1]}</span></div>
-      <div class="detail-row"><span class="detail-label">Engagement Cadence</span><span class="detail-value">${labels.q2[quizAnswers.q2]}</span></div>
-      <div class="detail-row"><span class="detail-label">Calendar Factors</span><span class="detail-value">${labels.q3[quizAnswers.q3]}</span></div>
-      <div class="detail-row"><span class="detail-label">Business Appetite</span><span class="detail-value">${labels.q4[quizAnswers.q4]}</span></div>
-    </div>`;
-
-  document.getElementById('durationRec').innerHTML = recHTML;
-  document.getElementById('durationBreakdown').innerHTML = breakdownHTML;
-  document.getElementById('durationCard').style.display = '';
-  document.getElementById('durationCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// Initialize hint
 updateSolveHint();
 </script>
 </body>
